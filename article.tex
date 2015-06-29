@@ -1,47 +1,51 @@
-\documentclass[5p]{elsarticle}
+\documentclass[10pt]{article}
 
-\usepackage{lineno,hyperref}
 \usepackage{graphicx}
+\usepackage{amsmath}
 \usepackage{url}
 \usepackage{subfig}
-\usepackage{amsmath}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{booktabs}
-\modulolinenumbers[5]
-
-\journal{Journal of Neural Networks}
-
-\bibliographystyle{bst/elsarticle-num}
+\usepackage[sort&compress]{natbib}
 
 \begin{document}
 
-\begin{frontmatter}
-
 \title{V4 Neural Network Model for Shape-based Feature Extraction and Object Discrimination}
 
-\author{Zheng Dong}
-\ead{dongzheng@fudan.edu.cn}
+\author{Hui Wei\footnote{Corresponding author} \and Zheng Dong
+\footnote{Hui Wei and Zheng Dong are with the Laboratory of Cognitive Modeling and Algorithms, %
+School of Computer Science, Fudan University, Shanghai, China. %
+Corresponding author's email: weihui@fudan.edu.cn}}
 
-\author{Hui Wei\corref{cor:1}}
-\cortext[cor:1]{Corresponding author}
-\ead{weihui@fudan.edu.cn}
+\date{}
 
-\address{Laboratory of Cognitive Modeling and Algorithms, %
-School of Computer Science, Fudan University, Shanghai, China}
+\maketitle
 
 \begin{abstract}
-This template helps you to create a properly formatted \LaTeX\ manuscript.
+Visual area V4 lies in the middle of the ventral visual pathway in the primate brain. 
+It is an intermediate stage in the visual processing for object discrimination. 
+It plays an important role in the neural mechanism of visual attention and shape recognition.
+V4 neurons exhibit selectivity for salient features of contour conformation.
+In this paper, we propose a novel model of V4 neurons based on a multilayer neural network
+inspired by recent studies on V4.
+Its low-level layers consist of computational units simulating simple cells and complex cells
+in the primary visual cortex.
+These layers extract preliminary visual features including edges and orientations.
+The V4 computational units calculate the entropy of the extracted features 
+as a measure of visual saliency.
+The salient features are then selected and encoded with a layer of 
+Restricted Boltzmann Machine to generate an intermediate representation of object shapes.
+The model is evaluated in shape distinction, feature detection, feature matching 
+and object discrimination experiments.
+The results demonstrate that this model generates discriminative local representation
+of object shapes.
+It shows a successful attempt to construct computation model of the ventral pathway
+for visual object recognition.
 \end{abstract}
 
-\begin{keyword}
-\texttt{elsarticle.cls}\sep \LaTeX\sep Elsevier \sep template
-\MSC[2010] 00-01\sep  99-00
-\end{keyword}
-
-\end{frontmatter}
-
-\linenumbers
+Keywords:
+Neural network model, visual cortex, V4, shape selectivity, feature extraction, object recognition
 
 \section{Introduction}
 
@@ -72,7 +76,7 @@ As an intermediate stage, V4 plays a crucial role in transforming low-level orie
 into complex object representations.
 
 \begin{figure}
-\centerline{\includegraphics[width=0.8\linewidth]{images/fig-1.png}} 
+\centerline{\includegraphics[width=0.8\linewidth]{images/fig-1.jpg}} 
 \caption{V4 is an intermediate stage in visual recognition.}
 \label{fig:1}
 \end{figure}
@@ -99,8 +103,10 @@ It is capable of locating salient points
 and generating discriminative local shape features around each salient point.
 In section~\ref{sec:4}, empirical evaluation shows that
 the model demonstrates similar selectivity compared with V4 neurons.
-and compared with other models in section~\ref{sec:exp}. 
-The conclusion is summarized in section~\ref{sec:conclusion}.
+The features extracted with the proposed model is 
+applied to object discrimination experiment in section~\ref{sec:5}
+and shows competitive performance.
+The conclusion is summarized in section~\ref{sec:6}.
 
 \section{Related work}\label{sec:2}
 
@@ -196,9 +202,9 @@ activate the neuron.
 
 \begin{figure}
 \centering
-\subfloat[]{\includegraphics[width=0.18\linewidth]{images/fig-2a.png}\label{fig:2a}}\hfil
-\subfloat[]{\includegraphics[width=0.36\linewidth]{images/fig-2b.png}\label{fig:2b}}\hfil
-\subfloat[]{\includegraphics[width=0.36\linewidth]{images/fig-2c.png}\label{fig:2c}}
+\subfloat[]{\includegraphics[width=0.18\linewidth]{images/fig-2a.jpg}\label{fig:2a}}\hfil
+\subfloat[]{\includegraphics[width=0.36\linewidth]{images/fig-2b.jpg}\label{fig:2b}}\hfil
+\subfloat[]{\includegraphics[width=0.36\linewidth]{images/fig-2c.jpg}\label{fig:2c}}
 \caption{Shapes to examine V4 selectivity.
 (a) Classical gratings.
 (b) Non-Cartesian gratings. V4 neurons prefer non-Cartesian gratings rather than classical gratings.
@@ -266,7 +272,7 @@ We focus on the neural mechanism of V4 with particular concern
 because the shape features extracted in V4 are significant in the process of object discrimination.
 
 \begin{figure}
-\centerline{\includegraphics[width=\linewidth]{images/fig-3.pdf}} 
+\centerline{\includegraphics[width=\linewidth]{images/fig-3.eps}} 
 \caption{Multilayer neural network model of V4.}
 \label{fig:3}
 \end{figure}
@@ -303,10 +309,10 @@ $\sigma_s$ approximates the radius of the receptive fields.
 \begin{figure}
 \centering
 \subfloat[Phase offset $\psi=\pi/2$]{
-  \includegraphics[width=0.4\linewidth]{images/fig-4a.pdf}
+  \includegraphics[width=0.4\linewidth]{images/fig-4a.jpg}
   \label{fig:4a}}
 \subfloat[Phase offset $\psi=0$]{
-  \includegraphics[width=0.4\linewidth]{images/fig-4b.pdf}
+  \includegraphics[width=0.4\linewidth]{images/fig-4b.jpg}
   \label{fig:4b}}
 \caption{Gabor functions with different phases.}
 \label{fig:4}
@@ -420,7 +426,7 @@ patches composed of simple structures have non-uniform distributions and thus lo
 Therefore, we filter out regions with high entropy.
 
 \begin{figure}
-\centerline{\includegraphics[width=0.8\linewidth]{images/fig-5.png}} 
+\centerline{\includegraphics[width=0.8\linewidth]{images/fig-5.jpg}} 
 \caption{Entropy of image patches.
 Bar charts in the second row show the output values of complex cells
 with different preferred orientations (from $0^\circ$ to $180^\circ$).}
@@ -485,7 +491,7 @@ The representation of the shape in the neighborhood of $(x,y)$
 is formed in the output layer (or hidden layer) of the RBM.
 
 \begin{figure}
-\centerline{\includegraphics[width=0.99\linewidth]{images/fig-6.pdf}} 
+\centerline{\includegraphics[width=0.99\linewidth]{images/fig-6.eps}} 
 \caption{RBM encoder for local shape feature.}
 \label{fig:6}
 \end{figure}
@@ -573,8 +579,8 @@ The difference between the two shapes is that one has a sharp projection towards
 
 \begin{figure}
 \centering
-\subfloat[Response map]{\includegraphics[width=0.48\linewidth]{images/fig-7a.png}\label{fig:7a}}\hfil
-\subfloat[Weight matrices]{\includegraphics[width=0.48\linewidth]{images/fig-7b.png}\label{fig:7b}}
+\subfloat[Response map]{\includegraphics[width=0.48\linewidth]{images/fig-7a.jpg}\label{fig:7a}}\hfil
+\subfloat[Weight matrices]{\includegraphics[width=0.48\linewidth]{images/fig-7b.jpg}\label{fig:7b}}
 \caption{Response map and weight matrices of a perceptron that distinguishes two shapes.
 (a) Responses of the perceptron over 18 samples.
 The perceptron prefers the shape in the left half of the samples.
@@ -681,10 +687,10 @@ They were sensitive to the angular position of the shapes.
 
 \begin{figure}
 \centering
-\subfloat[Patterns]{\includegraphics[width=0.24\linewidth]{images/fig-8a.png}\label{fig:8a}}\hfil
-\subfloat[Response map]{\includegraphics[width=0.24\linewidth]{images/fig-8b.png}\label{fig:8b}}\hfil
-\subfloat[Response map]{\includegraphics[width=0.24\linewidth]{images/fig-8c.png}\label{fig:8c}}\hfil
-\subfloat[Response map]{\includegraphics[width=0.24\linewidth]{images/fig-8d.png}\label{fig:8d}}
+\subfloat[Patterns]{\includegraphics[width=0.24\linewidth]{images/fig-8a.jpg}\label{fig:8a}}\hfil
+\subfloat[Response map]{\includegraphics[width=0.24\linewidth]{images/fig-8b.jpg}\label{fig:8b}}\hfil
+\subfloat[Response map]{\includegraphics[width=0.24\linewidth]{images/fig-8c.jpg}\label{fig:8c}}\hfil
+\subfloat[Response map]{\includegraphics[width=0.24\linewidth]{images/fig-8d.jpg}\label{fig:8d}}
 \caption{RBM output neurons responding to convex curves towards certain directions.
 (a) Sample patterns of segmented curves.
 (b) Response map of a neuron tuned for curves projecting upwards.
@@ -696,18 +702,18 @@ They were sensitive to the angular position of the shapes.
 \begin{figure}
 \centering
 \subfloat[Response map of a neuron selective for a pair of circular sectors (selectivity index = 3.92).]%
-{\includegraphics[width=0.9\linewidth]{images/fig-9a.png}\label{fig:9a}}\\
+{\includegraphics[width=0.9\linewidth]{images/fig-9a.jpg}\label{fig:9a}}\\
 \subfloat[Response map of a neuron selective for helix shapes (Selectivity index = 6.37).]%
-{\includegraphics[width=0.9\linewidth]{images/fig-9b.png}\label{fig:9b}}
+{\includegraphics[width=0.9\linewidth]{images/fig-9b.jpg}\label{fig:9b}}
 \caption{Response maps of RBM output neurons tuned for non-Cartesian gratings.}
 \label{fig:9}
 \end{figure}
 
 \begin{figure}
 \centering
-\subfloat[Patterns]{\includegraphics[width=0.31\linewidth]{images/fig-10a.png}\label{fig:10a}}\hfil
-\subfloat[Response map]{\includegraphics[width=0.31\linewidth]{images/fig-10b.png}\label{fig:10b}}\hfil
-\subfloat[Response map]{\includegraphics[width=0.31\linewidth]{images/fig-10c.png}\label{fig:10c}}
+\subfloat[Patterns]{\includegraphics[width=0.31\linewidth]{images/fig-10a.jpg}\label{fig:10a}}\hfil
+\subfloat[Response map]{\includegraphics[width=0.31\linewidth]{images/fig-10b.jpg}\label{fig:10b}}\hfil
+\subfloat[Response map]{\includegraphics[width=0.31\linewidth]{images/fig-10c.jpg}\label{fig:10c}}
 \caption{RBM output neurons responding to closed shapes.}
 \label{fig:10}
 \end{figure}
@@ -733,14 +739,14 @@ we evaluated the saliency filters with feature detection experiment.
 
 \begin{figure}
 \centering
-\subfloat[Car image]{\includegraphics[width=0.32\linewidth]{images/fig-11a.png}\label{fig:11a}}\hfil
-\subfloat[Activity map]{\includegraphics[width=0.32\linewidth]{images/fig-11c.png}\label{fig:11b}}\hfil
-\subfloat[Entropy map]{\includegraphics[width=0.32\linewidth]{images/fig-11e.png}\label{fig:11c}}\\
-\subfloat[Face image]{\includegraphics[width=0.32\linewidth]{images/fig-11b.png}\label{fig:11d}}\hfil
-\subfloat[Activity map]{\includegraphics[width=0.32\linewidth]{images/fig-11d.png}\label{fig:11e}}\hfil
-\subfloat[Entropy map]{\includegraphics[width=0.32\linewidth]{images/fig-11f.png}\label{fig:11f}}\\
-\subfloat[Salient points]{\includegraphics[width=0.49\linewidth]{images/fig-11g.pdf}\label{fig:11g}}\hfil
-\subfloat[Salient points]{\includegraphics[width=0.49\linewidth]{images/fig-11h.pdf}\label{fig:11h}}
+\subfloat[Car image]{\includegraphics[width=0.32\linewidth]{images/fig-11a.jpg}\label{fig:11a}}\hfil
+\subfloat[Activity map]{\includegraphics[width=0.32\linewidth]{images/fig-11c.jpg}\label{fig:11b}}\hfil
+\subfloat[Entropy map]{\includegraphics[width=0.32\linewidth]{images/fig-11e.jpg}\label{fig:11c}}\\
+\subfloat[Face image]{\includegraphics[width=0.32\linewidth]{images/fig-11b.jpg}\label{fig:11d}}\hfil
+\subfloat[Activity map]{\includegraphics[width=0.32\linewidth]{images/fig-11d.jpg}\label{fig:11e}}\hfil
+\subfloat[Entropy map]{\includegraphics[width=0.32\linewidth]{images/fig-11f.jpg}\label{fig:11f}}\\
+\subfloat[Salient points]{\includegraphics[width=0.49\linewidth]{images/fig-11g.jpg}\label{fig:11g}}\hfil
+\subfloat[Salient points]{\includegraphics[width=0.49\linewidth]{images/fig-11h.jpg}\label{fig:11h}}
 \caption{Feature detection. (a) and (d) show the original images.
 (b) and (e) are the complex cell activity. 
 Red color indicates strong activity and blue color indicates inhibition.
@@ -766,6 +772,7 @@ at the scale of 4, 8, and 16 in terms of the simple cell radius
 shown in Table \ref{tab:1}).
 
 \section{Object discrimination}
+\label{sec:5}
 
 In this section, we demonstrate the performance of the features 
 generated by our model in feature matching and object recognition tasks.
@@ -798,13 +805,13 @@ The VLFeat open-source library \cite{vedaldi2008}
 were utilized for the SIFT implementation 
 and the feature matching algorithm.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
   \subfloat[Matching between the same face]{
-    \includegraphics[width=0.8\linewidth]{images/fig-12a.pdf}
+    \includegraphics[width=0.8\linewidth]{images/fig-12a.jpg}
     \label{fig:12a}}\\
   \subfloat[Matching between different faces]{
-    \includegraphics[width=0.8\linewidth]{images/fig-12b.pdf}
+    \includegraphics[width=0.8\linewidth]{images/fig-12b.jpg}
     \label{fig:12b}}
 \caption{Matching face images.}
 \label{fig:12}
@@ -825,6 +832,31 @@ in matching features from different faces.
 The result suggests that our model exhibits 
 both competitive discrimination ability
 and better generalization ability compared with SIFT features.
+
+\begin{figure}
+\centering
+  \subfloat[Our match]{
+    \includegraphics[width=0.8\linewidth]{images/fig-13a.jpg}
+    \label{fig:13a}}\\
+  \subfloat[SIFT match]{
+    \includegraphics[width=0.8\linewidth]{images/fig-13b.jpg}
+    \label{fig:13b}}
+\caption{Comparison of feature matching between van images.}
+\label{fig:13}
+\end{figure}
+
+Another comparison in \figurename~\ref{fig:13} demonstrates
+more clearly the advantage of our model compared with SIFT feature.
+\figurename~\ref{fig:13a} shows that our model produced correct matches
+between the model van in the left and the two real vans in the right. 
+However, SIFT feature failed to produce correct matches (\figurename~\ref{fig:13b}). 
+SIFT feature utilizes the direction of image gradient. 
+It fails to capture the shape feature of an object when
+the object's color changes dramatically because the direction of
+image gradient changes with the color. 
+Our model focuses on the shape feature and thus achieves a stable matching despite
+the change in color.
+
 
 \subsection{Object recognition layer}
 
@@ -851,16 +883,16 @@ the output of complex cells given the image of Lena as input.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\linewidth]{images/fig-13.pdf}
+\includegraphics[width=0.5\linewidth]{images/fig-14.jpg}
 \caption{Demonstration of IT unit in our model. 
 IT unit combines V4 inputs in a grid layout rotated to the strongest orientation.}
-\label{fig:13}
+\label{fig:14}
 \end{figure}
 
 In order to achieve the invariance of feature orientations,
 the gird is rotated to the strongest orientation at the center of the receptive field.
 We have been inspired by the SIFT \cite{lowe1999} descriptor.
-The rotation is also demonstrated in \figurename~\ref{fig:13}.
+The rotation is also demonstrated in \figurename~\ref{fig:14}.
 The grid is rotated to the orientation of the edge of the hat appearing at the center of the grid.
 The strongest central orientation can be obtained by taking a maximal value 
 over the output of the complex cells connected to the central V4 units.
@@ -918,16 +950,16 @@ The results reported are averaged over 8 independent runs.
 \begin{figure}
 \centering
   \subfloat[Sampling density of orientations]{
-    \includegraphics[width=0.9\linewidth]{images/fig-14a.pdf}
-    \label{fig:14a}}\\
+    \includegraphics[width=0.9\linewidth]{images/fig-15a.eps}
+    \label{fig:15a}}\\
   \subfloat[Number of features per image]{
-    \includegraphics[width=0.9\linewidth]{images/fig-14b.pdf}
-    \label{fig:14b}}
+    \includegraphics[width=0.9\linewidth]{images/fig-15b.eps}
+    \label{fig:15b}}
 \caption{Performance with different parameters.}
-\label{fig:14}
+\label{fig:15}
 \end{figure}
 
-As shown in \figurename~\ref{fig:14a},
+As shown in \figurename~\ref{fig:15a},
 the selection of sampling density does not exhibit obvious impact on the performance.
 With a small density, we can lower the dimension of the input of RBM encoders
 without a significant loss in object recognition performance.
@@ -940,7 +972,7 @@ To investigate the contribution of the number of features on performance,
 we vary the number of features chosen from each training image.
 We choose 20 training samples from each category.
 The results reported are also averaged over 8 independent runs.
-\figurename~\ref{fig:14b} shows that 
+\figurename~\ref{fig:15b} shows that 
 with 50 features per image the result approaches the best performance.
 The number of required features can be notably reduced by introducing 
 a clustering step in the bag of words approach \cite{csurka2004}.
@@ -952,7 +984,7 @@ The influence of the number of training samples
 on the performance of our model is also studied.
 For each category, we randomly select training sets of size
 5,10,15,20,25 and 30.
-\figurename~\ref{fig:15a} shows the performance as
+\figurename~\ref{fig:16a} shows the performance as
 a function of the number of training images.
 The results reported are averaged over all categories
 with 50 features extracted from each training image.
@@ -961,16 +993,16 @@ The performance is compared with other published results.
 \begin{figure}
 \centering
   \subfloat[Comparison with other methods]{
-    \includegraphics[width=0.9\linewidth]{images/fig-15a.pdf}
-    \label{fig:15a}}\\
+    \includegraphics[width=0.9\linewidth]{images/fig-16a.eps}
+    \label{fig:16a}}\\
   \subfloat[Comparison with other features]{
-    \includegraphics[width=0.9\linewidth]{images/fig-15b.pdf}
-    \label{fig:15b}}
+    \includegraphics[width=0.9\linewidth]{images/fig-16b.eps}
+    \label{fig:16b}}
 \caption{Comparison of performance.}
-\label{fig:15}
+\label{fig:16}
 \end{figure}
 
-\figurename~\ref{fig:15b} shows
+\figurename~\ref{fig:16b} shows
 the performance of our model over the 101 categories
 compared with SIFT features \cite{lowe1999},
 PHOW features \cite{lazebnik2006},
@@ -983,7 +1015,7 @@ The images passed to the HMAX model are resized
 to a uniform height of 140 pixels as recommended by \cite{serre2007}.
 Our model exhibits competitive performance 
 compared with other models.
-As shown in \figurename~\ref{fig:15b},
+As shown in \figurename~\ref{fig:16b},
 the SIFT performance points over the 101 categories
 are almost completely to the left of the equivalent line.
 The PHOW performance points spread through 
@@ -993,34 +1025,50 @@ Compared with the biologically inspired HMAX model,
 our performance is also better for more than half
 of the 101 categories.
 
-\section{Conclusion}\label{sec:conclusion}
+\section{Conclusion}\label{sec:6}
 
-In this paper, we make an attempt 
-to construct a multi-layer neural network model 
-that explicitly maps different layers 
-to different stages in the visual pathway of object recognition. 
-We demonstrate in experiments that local image features 
-generated by this neural model show competitive performance 
-in object discrimination. 
-More over, this model provides a framework 
-to take into account higher-level stages in visual processing, 
-such as the area V4 and the IT cortex, 
-and emulates object recognition mechanisms in the cortex.
+In this paper, we propose a novel model for the visual area V4.
+It is based on the neural mechanism of the ventral visual pathway.
+We focus on visual attention and shape selectivity in V4.
+V4 in our model is implemented as a multilayer neural network 
+which selects salient points and encodes the shape feature in the neighborhood of the salient points.
+We demonstrate a variety of experiments in which the model was evaluated.
+The results show that the proposed model is consistent with the shape selectivity of area V4.
+It can find salient points in images and encode local shape feature into a discriminative representation.
 
-There are at least two directions that could be
-followed to further improve the model.
-First, feedback connections should be
-adopted for the reason that feedback connections
-occur widely in the neural systems in the forms 
-of both intra-layer and inter-layer feedbacks.
-Second, computational units that better 
-conform to the neural response patterns should
-be well evaluated and adopted 
-to replace the current coarse implementation 
-of the V4 and IT layers.
+We further evaluate our model in object recognition experiment.
+We designed a image descriptor which synthesizes several V4 computation units
+into an IT unit to produce a set of invariant local image features.
+Compared with traditional image descriptors,
+the proposed model shows competitive performance in object recognition experiment. 
+It captures the essential shape feature of objects
+and thus achieves a good balance between discrimination and generalization.
 
-\section*{References}
+\begin{figure}
+\centering
+\includegraphics[width=0.9\linewidth]{images/fig-17.jpg}
+\caption{Framework of the proposed model.}
+\label{fig:17}
+\end{figure}
 
+The framework of the proposed multilayer neural network model is shown in \figurename~\ref{fig:17}.
+Our contribution is focused on the V4 layer,
+where salient shape features are detected and located,
+and the features are encoded and further synthesized to produce discriminative representation of object shapes.
+The proposed model demonstrates a successful attempt to construct model of the ventral visual pathway
+in the brain for visual discrimination.
+We explicitly adopt the model of several layers of this pathway,
+including well studied lower-level layers, such as simple cells and complex cells.
+We focus our work on V4, which is significant but lacks mature computation models.
+
+Future work should involve improvement of the IT unit and further evaluation on learning and detection shapes.
+The implementation of the IT unit should conform to neural mechanism
+and should be capable of learning generalized representation of shape categories.
+Information about color and texture of objects is also very important,
+which should also participate in the process of object discrimination.
+These show the direction of our future work.
+
+\bibliographystyle{unsrt}
 \bibliography{ref}
 
 \end{document}
