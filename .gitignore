@@ -1,3 +1,4 @@
+.DS_Store
 *.bbl
 *.aux
 *.log
@@ -5,4 +6,4 @@
 *.blg
 *.out
 article.pdf
-
+*eps-converted-to.pdf
