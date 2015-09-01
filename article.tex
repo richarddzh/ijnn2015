@@ -10,8 +10,6 @@
 \usepackage[sort&compress]{natbib}
 \usepackage{setspace}
 
-\doublespacing
-
 \begin{document}
 
 \title{V4 Neural Network Model for Shape-based Feature Extraction and Object Discrimination}
@@ -26,25 +24,17 @@ Corresponding author's email: weihui@fudan.edu.cn}}
 \maketitle
 
 \begin{abstract}
-Visual area V4 lies in the middle of the ventral visual pathway in the primate brain. 
-It is an intermediate stage in the visual processing for object discrimination. 
-It plays an important role in the neural mechanism of visual attention and shape recognition.
-V4 neurons exhibit selectivity for salient features of contour conformation.
-In this paper, we propose a novel model of V4 neurons based on a multilayer neural network
-inspired by recent studies on V4.
-Its low-level layers consist of computational units simulating simple cells and complex cells
-in the primary visual cortex.
+Visual area V4 plays an important role in the neural mechanism of shape recognition.
+V4 neurons exhibit selectivity for the orientation and curvature of boundary fragments.
+In this paper, we propose a novel neural network model of V4 for shape-based feature extraction and other vision tasks.
+The low-level layers of the model consist of computational units simulating simple cells and complex cells in the primary visual cortex.
 These layers extract preliminary visual features including edges and orientations.
-The V4 computational units calculate the entropy of the extracted features 
-as a measure of visual saliency.
-The salient features are then selected and encoded with a layer of 
-Restricted Boltzmann Machine to generate an intermediate representation of object shapes.
-The model is evaluated in shape distinction, feature detection, feature matching 
-and object discrimination experiments.
-The results demonstrate that this model generates discriminative local representation
-of object shapes.
-It shows a successful attempt to construct computation model of the ventral pathway
-for visual object recognition.
+The V4 computational units calculate the entropy of the extracted features as a measure of visual saliency.
+The features around salient points are then selected and encoded with a layer of Restricted Boltzmann Machine 
+to generate an intermediate representation of object shapes.
+The model is evaluated in shape distinction, feature detection, feature matching and object discrimination experiments.
+The results demonstrate that this model generates discriminative local representation of object shapes.
+It shows a successful attempt to construct a computation model of visual object recognition in the brain.
 \end{abstract}
 
 Keywords:
@@ -52,199 +42,99 @@ Neural network model, visual cortex, V4, shape selectivity, feature extraction, 
 
 \section{Introduction}
 
-Understanding the content of images has always been a difficult task in image analysis
-due to the well known semantic gap \cite{smeulders2000}.
+Understanding the content of images has always been a difficult task in image analysis due to the well known semantic gap \cite{smeulders2000}.
 A high degree of abstraction is required to transform low-level pixel data into high-level knowledge of the images.
-Computer vision researchers attempt to bridge the gap between pixel data and image content with image features.
-Various methods have been proposed to extract features from pixel representation of images.
+In an attempt to bridge this semantic gap, various methods have been proposed to extract features from the pixel representation of images.
 However, humans and primates outperform any existing computer vision system with respect to almost any measure.
-How visual cortex recognizes objects is a critical question for neuroscience.
-Visual stimuli captured by the eye are transformed into neural impulses in the retina and further processed by 
-the visual cortex for high level cognitive tasks.
-The visual cortex plays an important role in filling the gap
-between visual stimuli and the implied semantic information.
-Neural impulses travel through the visual pathway \cite{ettlinger1990}
-in the visual cortex and finally contribute to a unified percept of the object of interest. 
+Though the neural mechanism of vision has not been fully revealed,
+recent research on neuroscience do provide many inspiring discoveries which would help development of computer vision algorithms.
+In this paper, we demonstrate a novel model of visual area V4 and its application to shape-based feature extraction and object discrimination.
+Experiment results show that the proposed model exhibits similar shape selectivity to that of real V4 neurons
+and it outperforms many existing methods in computer vision tasks including feature matching and image classification. 
 
 Primate brains possess two distinct visual pathways \cite{ettlinger1990,lehky2007}.
-The dorsal pathway is involved with processing the object's spatial location relevant to the viewer. 
-The ventral pathway is involved with object discrimination and recognition.
+The dorsal pathway is involved with processing the object's spatial location. 
+The ventral pathway is involved with object recognition.
 In this paper, we concentrate on the latter, the ventral pathway, and visual area V4 in particular.
 V4 lies in the middle of the ventral pathway (\figurename~\ref{fig:1}).
-Lower levels of the pathway (visual areas V1 and V2) extract preliminary visual features 
-including edges and orientations \cite{hubel1962,hubel1965}.
-Higher levels of the pathway (inferior temporal cortex) exhibit selectivity to complex objects
-like faces and body parts \cite{bruce1981,bell2009}.
-As an intermediate stage, V4 plays a crucial role in transforming low-level orientation signals 
-into complex object representations.
+It extracts the feature of contour conformation, which represents a middle level abstraction of visual information in the brain.
+Lower levels (V1 and V2) extract features such as edges and orientations \cite{hubel1962,hubel1965}.
+Higher levels (inferior temporal cortex) comprehend concepts of complex objects like faces and body parts \cite{bruce1981,bell2009}.
+As an intermediate stage, V4 plays a crucial role in transforming low-level orientation signals into complex object representations.
 
 \begin{figure}
-\centerline{\includegraphics[width=0.8\linewidth]{images/fig-1.jpg}} 
+\centerline{\includegraphics[width=0.8\linewidth]{images/fig1.jpg}} 
 \caption{V4 is an intermediate stage in visual recognition.}
 \label{fig:1}
 \end{figure}
 
-In this paper, we propose a multi-layer neural network model
-which imitates the neural mechanism of visual area V4 in the ventral visual pathway.
-Different stages of the neural pathway in the visual cortex
-are explicitly mapped to different layers of the neural network model.
+In this paper, we propose a multi-layer neural network model which imitates the neural mechanism of visual area V4 in the ventral visual pathway.
+Different stages of the neural pathway in the visual cortex are explicitly mapped to different layers of the neural network model.
 In this feed-forward network, features are extracted hierarchically from input images. 
 High-level local image features emerge in the output layer of the network. 
 The features encode local structures of object shapes in a way which closely resembles the mechanism of the cortex 
 and therefore achieve a good balance between the discrimination and generalization abilities.
-The features exhibit competitive performance when applied to object recognition tasks.
-Moreover, this multilayer neural network shows a successful attempt 
-to integrate different stages of visual processing in the brain. 
-It provides an extensible framework so that future findings in cortex mechanisms 
-can be adopted and applied to computer vision tasks.
+Moreover, this multilayer neural network shows a successful attempt to integrate different stages of visual processing in the brain. 
+It provides an extensible framework so that future findings in cortex mechanisms can be adopted and applied to computer vision tasks.
 
-We briefly introduce some related work on traditional image features
-and the biological background of our model in section~\ref{sec:2}.
-We focus on the shape selectivity of area V4 and some previous models of V4 are also discussed in this section.
+We briefly introduce some related work on image features and V4 models in section~\ref{sec:2}.
 In section~\ref{sec:3}, we give the detailed description of our proposed model.
-It is capable of locating salient points 
-and generating discriminative local shape features around each salient point.
-In section~\ref{sec:4}, empirical evaluation shows that
-the model demonstrates similar selectivity compared with V4 neurons.
-The features extracted with the proposed model is 
-applied to object discrimination experiment in section~\ref{sec:5}
-and shows competitive performance.
-The conclusion is summarized in section~\ref{sec:6}.
+It is capable of locating salient points and generating discriminative local shape features around salient points.
+In section~\ref{sec:4}, we show several experiments in which we evaluate the proposed model.
+The model is compared with real V4 neurons in a shape distinction experiment.
+The features extracted by the model are applied to various computer vision tasks.
+The conclusion is summarized in section~\ref{sec:5}.
 
 \section{Related work}\label{sec:2}
 
+In this section, we briefly explain the difference between our model and traditional image features.
+We also review several existing models of V4 and some other related models.
+
 \subsection{Traditional image features}
 
-Image features encode the image structure in a spatial neighborhood around each of a set of interest points.
-Extracting features is an important stage in the process of understanding the content of an image.
-These features can be low-level features, such as edges \cite{canny1986} 
-and corners \cite{harris1988,smith1997},
-or high-level features, which are usually more distinctive and descriptive.
-
-Traditional image features mostly fall into three categories \cite{mikolajczyk2005}: 
+The model proposed in this paper is a biologically motivated model for image feature extraction.
+As reviewed in \cite{mikolajczyk2005}, traditional image features fall into three categories: 
 distribution-based descriptors, spatial-frequency descriptors and differential-based descriptors.
-Distribution-based descriptors use histograms 
-to represent characteristics of local image regions.
-SIFT descriptor \cite{lowe1999} (including its variations) 
-and shape context \cite{belongie2002} are typical examples of such descriptors.
-SIFT descriptor uses histograms 
-of oriented image gradients over rectangular grids.
-Shape context implements similar idea 
-by computing histograms of edge pixels in a log-polar grid.
-Spatial-frequency descriptors and differential-based descriptors 
-use filters and derivatives to capture the invariant features. 
-Examples of these categories are 
-complex filters \cite{schaffalitzky2002} 
-and Baumberg's affine invariant descriptor \cite{baumberg2000}.
-Complex filters are a family of filters 
-derived by adding complex multipliers to a Gaussian filter.
-Baumberg's descriptor is generated 
-by applying an elliptical Gaussian filter 
-to the second order moment 
-of the scale-space derivative \cite{lindeberg1993} of images.
+Distribution-based descriptors use histograms to represent characteristics of local image regions.
+SIFT descriptor \cite{lowe1999} and shape context \cite{belongie2002} are typical examples of such descriptors.
+Spatial-frequency descriptors and differential-based descriptors use filters and derivatives to capture the invariant features. 
+Examples of these categories are complex filters \cite{schaffalitzky2002} and Baumberg's affine invariant descriptor \cite{baumberg2000}.
+These traditional image features utilize flat models which compute features directly from the image via statistical or algebraic techniques. 
+They have little in common with the neural systems.
+On the contrary, our proposed model simulates the biological vision in the level of neural mechanism.
+It is a multilayer model which employs the hierarchical structure of neural systems and extracts information from simple features to gradually complex features. 
 
-These traditional image features utilize flat models which compute features directly from the image
-via statistical or algebraic techniques. 
-The flat approach does not conform to the hierarchical mechanism \cite{ungerleider2011} 
-employed by neural systems such as the primate brain.
+\subsection{Previous V4 models}
 
-\subsection{Neural mechanism of vision}
-
-At lower levels of the ventral visual pathway (V1 and V2), neurons respond to features of local orientation. 
-These neurons fall into two categories, 
-simple cells and complex cells \cite{hubel1962,hubel1965,martinez2003}.
-The receptive fields of simple cells 
-can be understood as linear filters modeled as Gabor functions \cite{gabor1946}. 
-They respond primarily to oriented edges and gratings.
-Complex cells differ from simple cells in that a stimulus is
-effective wherever it is placed in the receptive field, provided
-that the orientation is appropriate \cite{hubel1962,hubel1965}. 
-
-Neurons in V4 and IT cortex encode high-level information.
-The exact nature of the encoded information remains to be determined.
-The response pattern of V4 neurons shows 
-a strong bias towards convex contour features \cite{pasupathy1999,pasupathy2001,pasupathy2002}. 
-V4 neurons are selective for orientation and curvature of boundary conformation.
-Research also suggests that simple shapes are represented 
-by patterns of activity across populations of V4 neurons \cite{pasupathy2002}.
-
-IT cortex is significant in visual recognition and
-discrimination \cite{desimone1980,bell2009,ungerleider2011,bruce1981}.
-It depends exclusively on inputs received from
-connections originating in V1 \cite{desimone1980}.
-Recently, object representations in the temporal cortex of monkeys and humans are revealed 
-by functional magnetic resonance imaging \cite{bell2009}.
-Discrete regions selective for animate and inanimate stimuli were found in both species.
-These regions could be further subdivided into regions selective for individual categories.
-
-\subsection{Shape Selectivity of V4 Neurons}
-
-Neurobiological studies on V4 have not produced a unified model of its function or circuitry.
-V4 neurons are known to be selective for color, shape, depth and even motion \cite{roe2012}.
-In this paper, we focus on the V4 selectivity for shapes. 
-Early experiments examined the selectivity of cells in V4 
-with classical stimuli including bars and sinusoidal gratings~(\figurename~\ref{fig:2a}) \cite{desimone1987}.
-Similar to earlier processing stages, some V4 neurons are tuned for orientation 
-and spatial frequency of edges and linear sinusoidal gratings.
-However, the majority of V4 neurons are sensitive to more complex shape properties. 
-Later experiments demonstrated that V4 neurons display a clear bias in their responses 
-in favor of non-Cartesian gratings~(\figurename~\ref{fig:2b}) and they show a significant degree of invariance 
-in their selectivity across changes in stimulus position \cite{gallant1996}.
-More recent experiments showed that V4 neurons can be strongly selective for curvature
-of contours and angular position of acute curvatures \cite{pasupathy1999,pasupathy2001}. 
-\figurename~\ref{fig:2c} shows a response map of a V4 neuron
-(reproduced from \cite{pasupathy2001}).
-The white shapes in \figurename~\ref{fig:2c} is presented in the receptive field of this V4 neuron
-with equally dark background. 
-The gray scale in the response map indicates the strength of the neuronal response.
-Darker background indicates that the neuronal response is stronger.
-This neuron is selectively tuned for acute convex border at the bottom right.
-The curvature and the angular position are both necessary conditions of the activation of this neuron.
-Neither rounded protrusions nor sharp curvatures towards directions other than the bottom left
-activate the neuron.
+V4 neurons have been examine with different varieties of visual stimuli, including light bars, sinusoidal gratings~(\figurename~\ref{fig:2a}),
+non-Cartesian gratings~(\figurename~\ref{fig:2b}), closed shapes~(\figurename~\ref{fig:2c}) \cite{desimone1987,gallant1996,pasupathy1999,pasupathy2001}.
+They generally prefer complex features to simple features such as bars and sinusoidal gratings \cite{gallant1996}.
+Most V4 neurons are tuned for the curvature and orientation of boundary fragments \cite{pasupathy2001}.
+Therefore, unlike neurons in V1, V4 neurons can not be modeled with linear filters.
 
 \begin{figure}
 \centering
-\subfloat[]{\includegraphics[width=0.18\linewidth]{images/fig-2a.jpg}\label{fig:2a}}\hfil
-\subfloat[]{\includegraphics[width=0.36\linewidth]{images/fig-2b.jpg}\label{fig:2b}}\hfil
-\subfloat[]{\includegraphics[width=0.36\linewidth]{images/fig-2c.jpg}\label{fig:2c}}
+\subfloat[]{\includegraphics[width=0.18\linewidth]{images/fig2a.jpg}\label{fig:2a}}\hfil
+\subfloat[]{\includegraphics[width=0.36\linewidth]{images/fig2b.jpg}\label{fig:2b}}\hfil
+\subfloat[]{\includegraphics[width=0.36\linewidth]{images/fig2c.jpg}\label{fig:2c}}
 \caption{Shapes to examine V4 selectivity.
-(a) Classical gratings.
-(b) Non-Cartesian gratings. V4 neurons prefer non-Cartesian gratings rather than classical gratings.
-(c) Response map of a V4 neuron which responds to a sharp convex curvature at the bottom left.
-Darker background indicates a stronger response.}
+(a) Sinusoidal gratings. (b) Non-Cartesian gratings. (c) Closed shapes.}
 \label{fig:2}
 \end{figure}
 
-\subsection{Previous models of V4}
-
 Several models have been proposed for V4 neurons.
 We briefly introduce the SRF model \cite{david2006} and the HMAX model \cite{riesenhuber1999,cadieu2007}.
-
-The spectral receptive field (SRF) \cite{david2006}
-describes properties of V4 receptive field in terms of the orientation and spatial frequency spectrum.
-The model is based on the fact that V4 neurons have large orientation and spatial frequency bandwidth.
-They respond selectively to stimuli such as contour conformations and non-Cartesian gratings,
-which generally consist of multiple orientations and spatial frequencies.
-The spectral model is also invariant to small changes in stimulus position 
-and thus explains the invariance property of V4 response patterns.
-The model is powerful in describing the shape selectivity of V4 neurons.
-However, it does not explain the emergence of the selectivity.
-It does not either provide the neural computing process to achieve such spectral receptive field.
-
-The HMAX model was first proposed in \cite{riesenhuber1999}
-as a generic model for object recognition in the visual cortex.
-It models the visual cortex into a hierarchical architecture 
-consisting of cascaded linear filters and non-linear maximum pooling operations.
-It was then adopted as a model for V4 shape selectivity and invariance \cite{cadieu2007}.
+The spectral receptive field (SRF) \cite{david2006} describes properties of V4 receptive field in terms of the orientation and spatial frequency spectrum.
+This model is powerful in describing the shape selectivity of V4 neurons.
+However, it does not provide any computational or neural mechanism to achieve V4 selectivity via spectral receptive field.
+The HMAX model was first proposed in \cite{riesenhuber1999} as a generic model for object recognition in the visual cortex.
+It models the visual cortex as a hierarchical architecture consisting of cascaded linear filters and non-linear maximum pooling operations.
+It has been also adopted as a model for V4 shape selectivity and invariance \cite{cadieu2007}.
 The training of the model is an NP-complete problem. 
-The authors used a greedy algorithm to obtain approximated solutions
-but they did not provide any biological evidence for the algorithm. 
+The authors used a greedy algorithm to obtain approximated solutions but they did not provide any biological evidence for the algorithm. 
 
-The proposed model of V4 in this paper overcomes the limitation of the previous models.
-In the next section, we demonstrate that its architecture and function is analogous 
-to those of the visual cortex.
-We also provide efficient training method for our model.
+
+
 
 \section{Multi-layer neural network model}\label{sec:3}
 
