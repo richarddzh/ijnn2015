@@ -129,54 +129,27 @@ This combined strategy allows our model to work on fewer training images.
 
 The information processing in the visual cortex follows a hierarchical scheme.
 Our model employs a similar hierarchical structure.
-Different cortex areas along the visual pathway are explicitly adopted in our model. 
+Different cortical areas along the neural pathway are explicitly mapped to different layers in our model. 
 \figurename~\ref{fig:3} shows the architecture of our model.
 
-\subsection{Innovation in our model}
-
-The application of neural science in computer vision has been very limited.
-The most widely used DoG filters and Gabor filters 
-are models of ganglion cells in the retina and simple cells in the primary visual cortex, 
-which correspond to early stages of visual processing in the brain.
-
-Biologically inspired models \cite{serre2007, hong2011},
-proposed recently have exhibited competitive performance in traditional computer vision tasks.
-However, these models are still limited to the utilization 
-of the structure of the primary visual cortex. 
-Most of these models originate from the HMAX \cite{riesenhuber1999} model 
-which duplicates the structure of simple cells and complex cells
-in the primary visual cortex for high-level processing.
-
-In our model, we attempt to map each stage in the ventral pathway of visual processing
-to a single layer of computational units.
-These units are carefully designed so that they conform to the neural mechanism.
-We focus on the neural mechanism of V4 with particular concern
-because the shape features extracted in V4 are significant in the process of object discrimination.
-
 \begin{figure}
-\centerline{\includegraphics[width=\linewidth]{images/fig-3.eps}} 
+\centerline{\includegraphics[width=\linewidth]{images/fig3.eps}} 
 \caption{Multilayer neural network model of V4.}
 \label{fig:3}
 \end{figure}
 
-\subsection{Layer of simple cells}
+\subsection{Layer of simple cells and complex cells}
 
-According to the hierarchy of the ventral visual pathway,
-area V4 receives input from the lower levels including area V1 and V2.
-These areas have been well studied since 1960s 
-by Hubel, Wiesel \cite{hubel1962} and succeeding researchers.
-
+According to the hierarchy of the ventral visual pathway, area V4 receives input from the lower levels including area V1 and V2.
 Neurons in V1 and V2 respond to local orientations.
 They fall into two categories, simple cells and complex cells.
-Simple cells respond primarily to oriented edges and gratings.
+A simple cell is activated when an edge stimulus is presented in its receptive field with appropriate orientation and position.
 Complex cells have larger receptive fields.
-A stimulus is effective wherever it is placed in the complex receptive field, 
-provided that the orientation is appropriate \cite{hubel1962}.
+A stimulus is effective wherever it is placed in the complex receptive field, provided that the orientation is appropriate \cite{hubel1962}.
 
 In our model, the layer of simple cells covers the whole dimension of input images.
-For each location, several simple cells with different preferred orientations 
-detect edges of different orientations.
-Simple cells are modeled as Gabor functions \cite{gabor1946},
+For each location, several simple cells with different preferred orientations detect edges of different orientations.
+Simple cells are modeled as Gabor functions,
 \begin{equation}\label{equ:gabor}
 g_{\theta}(x,y;\lambda,\sigma_s)
 =\exp \left(-\frac{x'^2+y'^2}{2\sigma_s^2}\right)
@@ -191,10 +164,10 @@ $\sigma_s$ approximates the radius of the receptive fields.
 \begin{figure}
 \centering
 \subfloat[Phase offset $\psi=\pi/2$]{
-  \includegraphics[width=0.4\linewidth]{images/fig-4a.jpg}
+  \includegraphics[width=0.4\linewidth]{images/fig4a.jpg}
   \label{fig:4a}}
 \subfloat[Phase offset $\psi=0$]{
-  \includegraphics[width=0.4\linewidth]{images/fig-4b.jpg}
+  \includegraphics[width=0.4\linewidth]{images/fig4b.jpg}
   \label{fig:4b}}
 \caption{Gabor functions with different phases.}
 \label{fig:4}
@@ -202,23 +175,15 @@ $\sigma_s$ approximates the radius of the receptive fields.
 
 It is notable that the phase offset $\psi$ affects the pattern of the receptive fields.
 \figurename~\ref{fig:4}~shows two Gabor functions with different phase offsets.
-The sinusoidal factors of the two Gabor functions 
-are odd function and even function respectively.
-The odd Gabor function resembles a gradient operator
-while the even Gabor function resembles a Laplacian operator.
-In a computational point of view, 
-the Laplacian operator calculates a higher order derivative 
-than the gradient operator.
+The sinusoidal factors of the two Gabor functions are odd function and even function respectively.
+The odd Gabor function resembles a gradient operator while the even Gabor function resembles a Laplacian operator.
+In a computational point of view, the Laplacian operator calculates a higher order derivative than the gradient operator.
 The gradient operator suppresses the smooth area in images.
-Moreover, the Laplacian operator is able 
-to suppress area that varies smoothly, 
-which is also neglected by human eyes generally.
-Therefore, in our model, the even Gabor function 
-with the phase offset $\psi=0$ is employed.
+Moreover, the Laplacian operator is able to suppress area that varies smoothly, which is also neglected by human eyes generally.
+Therefore, in our model, the even Gabor function with the phase offset $\psi=0$ is employed.
 
 The layer of simple cells operates on raw image input. 
-The output of simple cells with preferred orientation $\theta$
-and scale $\sigma_s$ is the following convolution passed through a transfer function $\phi$,
+The output of simple cells with preferred orientation $\theta$ and scale $\sigma_s$ is the following convolution passed through a transfer function $\phi$,
 \begin{equation}\label{equ:gabor}
 S_{\theta,\sigma_s}(x,y)=\phi(I\otimes g_{\theta,\sigma_s}),
 \end{equation}
@@ -230,93 +195,65 @@ u & \text{if } u>0,\\
 \end{array}\right.
 \end{equation}
 
-\subsection{Layer of complex cells}
-
 Complex cells are modeled as Gaussian filters which take inputs from simple cells,
 \begin{equation}
 f(x,y;\sigma_c)=\frac{1}{2\pi\sigma_c^2}\exp\left(-\frac{x^2+y^2}{2\sigma_c^2}\right),
 \end{equation}
 where $\sigma_c$ represents the radius of the complex receptive fields.
-The filters are discretized into matrices and normalized before applied to digital images.
 The radius of complex receptive field is approximately twice as long as that of a simple cell.
 We take this size because qualitatively the complex receptive fields are usually two to five times wider 
-than the bars of gratings that stimulate them most effectively \cite{movshon1978}.
+than the bars of gratings that stimulate them most effectively \cite{hubel1962}.
 In this paper, we have $\sigma_c=2\sigma_s$.
 
 Given $I(x,y)$ as some input image, the output of complex cells
 with the preferred orientation $\theta$ is defined as the following convolution.
 \begin{equation}
-C_{\theta}=|S_{\theta}|\otimes f.
+C_{\theta}=S_{\theta}\otimes f.
 \label{equ:complex}
 \end{equation}
-We use absolute values of simple cell outputs 
-because we do not distinguish between dark edges and bright edges.
-Generally speaking, simple cells modeled as in equation (\ref{equ:gabor}) 
-with phase offset $\psi=0$ response best to stimuli of bright stripes in dark background, i.e., bright edges.
-Such cells are thus called ON-center \cite{hubel1962} cells in the neural system.
-Dark edges result in a negative response (strong inhibition) of ON-center cells.
-In the neural system, OFF-center cells with inversed receptive fields response to dark edges.
-In our model, ON-center and OFF-center cells are not distinguished.
-In other words, the layer of complex cells in our model is sensitive to bright edges, dark edges 
-and boundaries between bright and dark areas.
+
+In the HMAX model \cite{riesenhuber1999} and the deep convolutional neural network \cite{krizhevsky2012}, pooling operation is an important step.
+Pooling features over a local neighborhood can create invariance to small transformations of the input \cite{boureau2010}.
+In our model, complex cells carry out similar function.
+The operation can be viewed as a Gaussian-weighted average pooling.
+We choose weighted average pooling because average pooling can be efficiently calculated with artificial neurons
+and weighted average gives the complex cell's receptive field a smooth and circular boundary.  
 
 \subsection{Saliency filters in V4 layer}
 
-V4 is an area of attentional modulation \cite{roe2012}.
 Visual attention involves selecting an interested region or selecting specific object features.
-Visual attention in V4 is influenced by both top-down feedback from higher levels in the visual pathway
-and bottom-up input from lower levels.
-We focus on the bottom-up influence.
-In a bottom-up process, V4 evaluates the saliency of the input from lower levels
-and focuses its attention automatically on the salient features.
-
-We use entropy to measure the saliency of images \cite{kadir2001}.
-In \cite{kadir2001}, it is assumed that salient regions have high complexity (and correspondingly high entropy).The entropy of features is used as a scale invariant measure.
-The salient region is selected at entropy peaks over scales.
-To avoid erroneously selecting noise or texture as salient regions,
-a measure of self-similarity is employed.
-Self-similar regions are filtered out.
-
-In this paper, we use entropy in a different approach.
-V4 neurons encode fragments of object contour \cite{pasupathy2001,pasupathy2002}.
-They are selective for simple structures such as convex or concave curvature.
-Therefore, in our assumption, 
-well ordered structures with low complexity are preferred in cognitive activities.
-We filter out regions with high complexity (or entropy).
-
+Area V4 shows selective attention based on spatial location \cite{desimone1995}.
+The underlying neural mechanism is unknown.
+V4 neurons exhibit preference for geometrically ordered stimuli \cite{sasaki2005}.
+Therefore we use entropy (a measure of disorder) to measure the saliency of images.
 The entropy is calculated according to the output of complex cells.
 Given a point $(x,y)$, in the neighborhood of $(x,y)$,
 a complex cell with preferred orientation $\theta$ has output value $C_{\theta}(x,y)$,
-We suppose that the probability of a complex cell being activated
-is proportional to the output value.
+We suppose that the probability of a complex cell being activated is proportional to the output value.
 The probability is thus defined as:
 \begin{equation}
 P(\theta)=\frac{1}{\sum_{\theta_i} C_{\theta_i}(x,y)}\cdot C_{\theta}(x,y).
 \end{equation}
-The entropy of the complex cell activity in this neighborhood
-is 
+The entropy of the complex cell activity in this neighborhood is 
 \begin{equation}
 E=-\sum_{\theta} P(\theta) \log P(\theta).
 \end{equation}
 
 \figurename~\ref{fig:5} shows four image patches.
-For each image patch, the output values of complex cells with different preferred orientations
-(from $0^\circ$ to $180^\circ$) are plotted in a bar chart.
+For each image patch, the output values of complex cells with different preferred orientations (from $0^\circ$ to $180^\circ$) are plotted in a bar chart.
 The charts show the distribution of complex cell activities.
-The entropy calculated accordingly indicates that 
-patches composed of simple structures have non-uniform distributions and thus low entropy values.
+The entropy calculated accordingly indicates that patches composed of simple structures have non-uniform distributions and thus low entropy values.
 Therefore, we filter out regions with high entropy.
 
 \begin{figure}
-\centerline{\includegraphics[width=0.8\linewidth]{images/fig-5.jpg}} 
+\centerline{\includegraphics[width=0.8\linewidth]{images/fig5.jpg}} 
 \caption{Entropy of image patches.
 Bar charts in the second row show the output values of complex cells
 with different preferred orientations (from $0^\circ$ to $180^\circ$).}
 \label{fig:5}
 \end{figure}
 
-In addition to entropy, 
-local competition also plays a role in attentional selection \cite{desimone1995}.
+In addition to entropy, local competition also plays a role in attentional selection \cite{desimone1995}.
 With limited neural resources, only strong and competitive neuronal signals get transmitted and processed.
 In our model, the saliency layer finds local maximums of complex cell output
 and filters out those points with high entropy values or low activities (or output values).
