@@ -1,4 +1,4 @@
-\documentclass[9pt,twocolumn]{article}
+\documentclass[twocolumn]{article}
 
 \usepackage{graphicx}
 \usepackage{amsmath}
@@ -50,7 +50,7 @@ Though the neural mechanism of vision has not been fully revealed,
 recent research on neuroscience do provide many inspiring discoveries which would help development of computer vision algorithms.
 In this paper, we demonstrate a novel model of visual area V4 and its application to shape-based feature extraction and object discrimination.
 Experiment results show that the proposed model exhibits similar shape selectivity to that of real V4 neurons
-and it outperforms many existing methods in computer vision tasks including feature matching and image classification. 
+and it outperforms many existing methods in computer vision tasks including feature matching and object recognition. 
 
 V4 lies in the middle of the ventral visual pathway \cite{ettlinger1990}, 
 which is the neural stream involved with object recognition in the brain (\figurename~\ref{fig:1}).
@@ -137,49 +137,25 @@ Different cortical areas along the neural pathway are explicitly mapped to diffe
 
 \subsection{Layers of simple cells and complex cells}
 
-According to the hierarchy of the ventral visual pathway, area V4 receives input from the lower levels including area V1 and V2.
+According to the hierarchy of the visual cortex, area V4 receives input from the lower levels including area V1 and V2.
 Neurons in V1 and V2 respond to local orientations.
 They fall into two categories, simple cells and complex cells.
 A simple cell is activated when an edge stimulus is presented in its receptive field with appropriate orientation and position.
 Complex cells have larger receptive fields.
 A stimulus is effective wherever it is placed in the complex receptive field, provided that the orientation is appropriate \cite{hubel1962}.
 
-In our model, the layer of simple cells covers the whole dimension of input images.
-For each location, several simple cells with different preferred orientations detect edges of different orientations.
-Simple cells are modeled as Gabor functions,
+In our model, simple cells are modeled as Gabor functions,
 \begin{equation}\label{equ:gabor}
 g_{\theta}(x,y;\lambda,\sigma_s)
 =\exp \left(-\frac{x'^2+y'^2}{2\sigma_s^2}\right)
-\cos \left(2\pi\frac{x'}{\lambda}+\psi\right),
+\cos\frac{2\pi x'}{\lambda},
 \end{equation}
 where $x'=x\cos\theta+y\sin\theta$, $y'=-x\sin\theta+y\cos\theta$.
 In the equation, $\lambda$ is the wavelength of the sinusoidal factor, 
-$\psi$ is the phase offset, 
-$\theta$ represents the preferred orientation and 
-$\sigma_s$ approximates the radius of the receptive fields.
+$\theta$ represents the preferred orientation,
+and $\sigma_s$ approximates the radius of the receptive fields.
 
-\begin{figure}
-\centering
-\subfloat[Phase offset $\psi=\pi/2$]{
-  \includegraphics[width=0.4\linewidth]{images/fig4a.jpg}
-  \label{fig:4a}}
-\subfloat[Phase offset $\psi=0$]{
-  \includegraphics[width=0.4\linewidth]{images/fig4b.jpg}
-  \label{fig:4b}}
-\caption{Gabor functions with different phases.}
-\label{fig:4}
-\end{figure}
-
-It is notable that the phase offset $\psi$ affects the pattern of the receptive fields.
-\figurename~\ref{fig:4}~shows two Gabor functions with different phase offsets.
-The sinusoidal factors of the two Gabor functions are odd function and even function respectively.
-The odd Gabor function resembles a gradient operator while the even Gabor function resembles a Laplacian operator.
-In a computational point of view, the Laplacian operator calculates a higher order derivative than the gradient operator.
-The gradient operator suppresses the smooth area in images.
-Moreover, the Laplacian operator is able to suppress area that varies smoothly, which is also neglected by human eyes generally.
-Therefore, in our model, the even Gabor function with the phase offset $\psi=0$ is employed.
-
-The layer of simple cells operates on raw image input. 
+Simple cells operates on raw image input. 
 The output of simple cells with preferred orientation $\theta$ and scale $\sigma_s$ is the following convolution passed through a transfer function $\phi$,
 \begin{equation}\label{equ:gabor}
 S_{\theta,\sigma_s}(x,y)=\phi(I\otimes g_{\theta,\sigma_s}),
@@ -202,8 +178,7 @@ We take this size because qualitatively the complex receptive fields are usually
 than the bars of gratings that stimulate them most effectively \cite{hubel1962}.
 In this paper, we have $\sigma_c=2\sigma_s$.
 
-Given $I(x,y)$ as some input image, the output of complex cells
-with the preferred orientation $\theta$ is defined as the following convolution.
+Given $I(x,y)$ as some input image, the output of complex cells with the preferred orientation $\theta$ is defined as the following convolution.
 \begin{equation}
 C_{\theta}=S_{\theta}\otimes f.
 \label{equ:complex}
@@ -236,24 +211,22 @@ The entropy of the complex cell activity in this neighborhood is
 E=-\sum_{\theta} P(\theta) \log P(\theta).
 \end{equation}
 
-\figurename~\ref{fig:5} shows four image patches.
+\figurename~\ref{fig:4} shows four image patches.
 For each image patch, the output values of complex cells with different preferred orientations (from $0^\circ$ to $180^\circ$) are plotted in a bar chart.
 The charts show the distribution of complex cell activities.
-The entropy calculated accordingly indicates that patches composed of simple structures have non-uniform distributions and thus low entropy values.
+The entropy calculated accordingly indicates that patches composed of geometrically ordered structures have non-uniform distributions and thus low entropy values.
 Therefore, we filter out regions with high entropy.
 
 \begin{figure}
-\centerline{\includegraphics[width=0.8\linewidth]{images/fig5.jpg}} 
+\centerline{\includegraphics[width=0.8\linewidth]{images/fig4.jpg}} 
 \caption{Entropy of image patches.
 Bar charts in the second row show the output values of complex cells
 with different preferred orientations (from $0^\circ$ to $180^\circ$).}
-\label{fig:5}
+\label{fig:4}
 \end{figure}
 
 In addition to entropy, local competition also plays a role in attentional selection \cite{desimone1995}.
-With limited neural resources, only strong and competitive neuronal signals get transmitted and processed.
-In our model, the saliency layer finds local maximums of complex cell output
-and filters out those points with high entropy values or low activities (or output values).
+In our model, the saliency layer finds local maximums of complex cell output and filters out those points with high entropy values or low activities.
 The algorithm is listed in Algorithm \ref{alg:1}.
 In our experiment, the saliency filters take a threshold $t_E=2.8$ for the entropy
 and a threshold $t_A=0.4$ for complex cell output value (or complex cell activity).
@@ -282,6 +255,30 @@ These values are roughly the median values of natural images.
     \EndProcedure
   \end{algorithmic}
 \end{algorithm}
+
+\figurename~\ref{fig:5} shows the process of feature detection.
+Saliency filters successfully filter out the trees and handwriting at the background of the images.
+These regions have little shape features but the activity map of complex cells contains high values caused by a large amount of disordered edges. 
+Disordered edges result in high entropy values because the distribution of complex cell activity over different orientations is near uniform.
+Saliency filters filter out these regions by applying a threshold to the entropy map.
+
+\begin{figure}
+\centering
+\subfloat[Car image]{\includegraphics[width=0.32\linewidth]{images/fig5a.jpg}\label{fig:5a}}\hfil
+\subfloat[Activity map]{\includegraphics[width=0.32\linewidth]{images/fig5c.jpg}\label{fig:5b}}\hfil
+\subfloat[Entropy map]{\includegraphics[width=0.32\linewidth]{images/fig5e.jpg}\label{fig:5c}}\\
+\subfloat[Face image]{\includegraphics[width=0.32\linewidth]{images/fig5b.jpg}\label{fig:5d}}\hfil
+\subfloat[Activity map]{\includegraphics[width=0.32\linewidth]{images/fig5d.jpg}\label{fig:5e}}\hfil
+\subfloat[Entropy map]{\includegraphics[width=0.32\linewidth]{images/fig5f.jpg}\label{fig:5f}}\\
+\subfloat[Salient points]{\includegraphics[width=0.49\linewidth]{images/fig5g.jpg}\label{fig:5g}}\hfil
+\subfloat[Salient points]{\includegraphics[width=0.49\linewidth]{images/fig5h.jpg}\label{fig:5h}}
+\caption{Feature detection. (a)(d) Original images.
+(b)(e) Complex cell activity map. 
+(c)(f) Entropy map.
+In the maps, red color indicates high value and blue color indicates low value.
+(g)(h) Salient points at the scale of 4, 8, and 16 in terms of simple cell radius.}
+\label{fig:5}
+\end{figure}
 
 \subsection{RBM encoders in V4 layer}
 
@@ -314,27 +311,26 @@ where $\epsilon$ is the learning rate, $\lambda$ is the weight-cost coefficient,
 $\langle v_i h_j\rangle_\text{data}$ is the product of two units when the visible layer is given real data,
 and $\langle v_i h_j\rangle_\text{recon}$ is the product of two units when the visible layer is given reconstructed data.
 
-\section{Shape-based feature extraction}\label{sec:4}
+\section{Experiments}\label{sec:4}
 
-In this section, we demonstrate a series of experiments.
-In the experiments, our proposed model extracts local shape features from images.
-Compared with V4 neurons, it shows similar selectivity for different features.
+In this section, we demonstrate several experiments.
+The first two experiments show that the shape selectivity of our model conforms to that of real V4 neurons.
+The following experiments evaluate our model in feature matching and object recognition tasks.
 
-\subsection{Perceptron over Complex Cells}
+\subsection{Perceptron over complex cells}
 
-We have reviewed the shape selectivity of V4 neurons in section \ref{sec:2}.
-In the following experiment, we examined that the output of complex cells provides sufficient information
-for the emergence of neuronal response pattern of V4.
-The experiment involved only the first two layers (i.e., simple cells and complex cells) in our model.
-A perceptron was configured to take complex cells as input.
+With this experiment, we demonstrate that artificial neurons which take input directly from complex cells can imitate neuronal response pattern of V4.
+Therefore, it is feasible that we use a single layer of RBM to extract V4 features from complex cells.
+
+In the experiment, a perceptron was configured to take complex cells as input.
 It was then trained to distinguish between two shapes shown in \figurename~\ref{fig:7a}.
 The shapes were also used to examine the selectivity of V4 in \cite{pasupathy2001}.
-The difference between the two shapes is that one has a sharp projection towards the top right.
+The difference between the two shapes is that one has a sharp corner towards the top right.
 
 \begin{figure}
 \centering
-\subfloat[Response map]{\includegraphics[width=0.48\linewidth]{images/fig-7a.jpg}\label{fig:7a}}\hfil
-\subfloat[Weight matrices]{\includegraphics[width=0.48\linewidth]{images/fig-7b.jpg}\label{fig:7b}}
+\subfloat[Response map]{\includegraphics[width=0.48\linewidth]{images/fig7a.jpg}\label{fig:7a}}\hfil
+\subfloat[Weight matrices]{\includegraphics[width=0.48\linewidth]{images/fig7b.jpg}\label{fig:7b}}
 \caption{Response map and weight matrices of a perceptron that distinguishes two shapes.
 (a) Responses of the perceptron over 18 samples.
 The perceptron prefers the shape in the left half of the samples.
@@ -345,20 +341,20 @@ Complex cells of 18 different orientations provide input for this perceptron.}
 \label{fig:7}
 \end{figure}
 
-Since V4 neurons show a certain degree of invariance in their selectivity across changes in stimulus position,
+Since V4 neurons show a certain degree of invariance in stimulus position,
 we moved the shapes randomly within the receptive field of the perceptron 
 to generate samples for training and testing (\figurename~\ref{fig:7a} shows several samples).
 The samples were then used as input of the layers of simple cells and complex cells.
 The output of complex cells were passed to the perceptron.
-We had complex cells with different preferred orientations 
-(from $0^\circ$ to $170^\circ$ in steps of $10^\circ$) and over different positions in the receptive field.
+We had complex cells with 18 different preferred orientations (from $0^\circ$ to $170^\circ$ in steps of $10^\circ$) 
+and over different positions in the V4 receptive field.
 Therefore, the input of the perceptron consisted of 18 matrices, 
 each corresponding to the output of complex cells with a certain orientation.
 The input weight of the perceptron was thus also 18 matrices.
 
-The trained perceptron exhibited a strong bias towards the shape with convex curvature towards the top right.
+The trained perceptron exhibited a strong bias towards the shape with a sharp corner towards the top right.
 It also showed a significant degree of invariance to the stimulus position.
-It is obvious that the selectivity is not formed from certain excitatory sub-regions
+It is obvious that this kind of selectivity is not formed from certain excitatory sub-regions
 or inhibitory sub-regions of the receptive field which was found of simple cells \cite{hubel1962,pasupathy2001}.
 The selectivity of the perceptron tallies with the selectivity of actual V4 neurons.
 The response map is shown in \figurename~\ref{fig:7a}.
@@ -367,41 +363,33 @@ The input weight of this perceptron is shown in \figurename~\ref{fig:7b}.
 Each block shows the weight from the complex cells of a certain preferred orientation.
 Red color denotes positive weight while blue color denotes negative weight.
 
-This experiment demonstrates that complex cells provide sufficient information
-for V4 neurons to show selectivity observed in neurobiological experiments.
+This experiment demonstrates that complex cells provide sufficient information for V4 neurons to show selectivity observed in neurobiological experiments.
 
-\subsection{Shape Selectivity}
+\subsection{Shape selectivity}
 
 In the following experiment, we trained our model to learn shapes.
-The training process involved the layers of simple cells, complex cells and RBM encoders.
+After training, our model can distinguish the stimuli which V4 neurons are selectively tuned for.
 The training samples were collected from \cite{gallant1996,pasupathy1999,pasupathy2001}, 
-including 4 categories of stimuli, i.e.,
-sinusoidal gratings, non-Cartesian gratings, segmented curves, and closed shapes.
-The simple cells in our model took these sample images as input.
-The images were processed by simple cells and complex cells.
-Since the sample images were fitted into V4 receptive fields in neurobiological experiments,
-we adjusted the scale of the images to fit the size of a single V4 receptive field in our model too.
-Therefore the saliency filters were not necessary in this experiment.
-The output of complex cells were passed directly on to an RBM encoder.
+including 4 categories of stimuli, i.e., sinusoidal gratings, non-Cartesian gratings, segmented curves, and closed shapes.
+The training process involved the layers of simple cells, complex cells and RBM encoders.
+Since each sample image was fitted into a single V4 receptive field, the saliency filters were not involved in this experiment.
 
-We used an RBM with 256 hidden units (RBM output neurons) in this experiment.
-In order to assess the selectivity of these units,
-we assigned each unit a selectivity index over a category of stimuli.
-The selectivity index is defined as the ratio of the maximal response to the average response 
-over the stimuli of a certain category.
-Given an RBM output unit $h$ and its output value $h_i$ over a category of $N$ stimuli for $i=1,2,\dots,N$.
+We used an RBM with 256 hidden units in this experiment.
+In order to assess the selectivity of these units, we assigned each unit a selectivity index over a category of stimuli.
+The selectivity index is defined as the ratio of the maximal response to the average response over the stimuli of a certain category.
+Given an RBM output unit $h$ and its output value $h_i$ over the $i$-th stimulus in a category of $N$ stimuli.
 The selectivity index $\mathcal{S}$ of $h$ is given by
 \begin{equation}
 \mathcal{S}(h)=\frac{\max\{h_i|i=1,2,\dots,N\}}{\sum_{i=1}^N h_i/N}.
 \end{equation}
-In the following statistics, we assumed that a neuron has significant selectivity over a category of stimuli
-if the selectivity index is greater than 3.5.
+In the following statistics, we assumed that a unit has significant selectivity over a category of stimuli
+if its selectivity index is greater than the average index.
 Among the 256 units, 171 units exhibited significant selectivity for different stimuli.
 102 units showed selectivity for segmented curves (\figurename~\ref{fig:8}).
 55 units showed strong bias towards non-Cartesian gratings (\figurename~\ref{fig:9})
 while 50 units showed selectivity for classical sinusoidal gratings.
 68 units exhibited selectivity for closed shapes (\figurename~\ref{fig:10}).
-The shape selectivity of our model is listed in \tablename~\ref{tab:2}.
+The shape selectivity of our model is listed in \tablename~\ref{tab:1}.
 The categories of selectivity are not mutually disjoint.
 A single unit may possess more than one kind of selectivity simultaneously.
 
@@ -410,7 +398,7 @@ A single unit may possess more than one kind of selectivity simultaneously.
 \centering
 \begin{tabular}{rrr}
 \toprule
-Selectivity & Number of Units & Percentage \\
+Selectivity & \#Units & Percentage \\
 \midrule
 Sinusoidal gratings & 50 & 19.5\% \\
 Non-Cartesian gratings & 55 & 21.5\% \\
@@ -418,368 +406,187 @@ Segmented curves & 102 & 39.8\% \\
 Closed shapes & 68 & 26.6\% \\
 \bottomrule
 \end{tabular}
-\label{tab:2}
+\label{tab:1}
 \end{table}
 
-\figurename~\ref{fig:8a} shows the sample patterns of segmented curves.
-\figurename~\ref{fig:8b} to \figurename~\ref{fig:8d} show the response maps of 3 RBM output neurons.
+\figurename~\ref{fig:8} show three response maps to segmented curves.
 Darker background indicates stronger response.
-The selectivity indexes is shown at the top.
-It is shown that the three neurons exhibited strong bias towards curves rather than straight lines.
-The neurons were tuned for the orientation of the projection of the segmented curves.
+It is shown that the three units exhibited strong bias towards curves rather than straight lines.
+They were all tuned for the orientation of the projections.
 This is compliant with the selectivity of V4 neurons described in \cite{pasupathy1999}.
-
-\figurename~\ref{fig:9} shows the response maps of two RBM output neurons
-which are selective for non-Cartesian gratings.
-Both of the two neurons were not sensitive to sinusoidal gratings.
-The one in \figurename~\ref{fig:9a} was selective for a pair of circular sectors.
-The one in \figurename~\ref{fig:9b} preferred non-Cartesian gratings of helix shapes.
-
-\figurename~\ref{fig:10} shows the sample patterns of closed shapes and the response map of two neurons.
-The two neurons were selectively tuned for two kinds of shapes.
-They were sensitive to the angular position of the shapes.
+\figurename~\ref{fig:9} shows the response maps of two units which are selective for non-Cartesian gratings.
+Both of the two units were not sensitive to sinusoidal gratings.
+\figurename~\ref{fig:10} shows the sample patterns of closed shapes and the response map of two units selectively tuned for two kinds of shapes.
+They were sensitive to the angular position of the shapes \cite{pasupathy2001}.
 
 \begin{figure}
 \centering
-\subfloat[Patterns]{\includegraphics[width=0.24\linewidth]{images/fig-8a.jpg}\label{fig:8a}}\hfil
-\subfloat[Response map]{\includegraphics[width=0.24\linewidth]{images/fig-8b.jpg}\label{fig:8b}}\hfil
-\subfloat[Response map]{\includegraphics[width=0.24\linewidth]{images/fig-8c.jpg}\label{fig:8c}}\hfil
-\subfloat[Response map]{\includegraphics[width=0.24\linewidth]{images/fig-8d.jpg}\label{fig:8d}}
-\caption{RBM output neurons responding to convex curves towards certain directions.
+\subfloat[]{\includegraphics[width=0.24\linewidth]{images/fig8a.jpg}\label{fig:8a}}\hfil
+\subfloat[]{\includegraphics[width=0.24\linewidth]{images/fig8b.jpg}\label{fig:8b}}\hfil
+\subfloat[]{\includegraphics[width=0.24\linewidth]{images/fig8c.jpg}\label{fig:8c}}\hfil
+\subfloat[]{\includegraphics[width=0.24\linewidth]{images/fig8d.jpg}\label{fig:8d}}
+\caption{RBM output units responding to convex curves towards certain directions.
 (a) Sample patterns of segmented curves.
-(b) Response map of a neuron tuned for curves projecting upwards.
-(c) Response map of a neuron tuned for curves projecting downwards.
-(d) Response map of a neuron tuned for curves projecting towards the top left.}
+(b-d) Selectivity indexes and response maps of units tuned for upward, downward, and top-left projections. }
 \label{fig:8}
 \end{figure}
 
 \begin{figure}
 \centering
-\subfloat[Response map of a neuron selective for a pair of circular sectors (selectivity index = 3.92).]%
-{\includegraphics[width=0.9\linewidth]{images/fig-9a.jpg}\label{fig:9a}}\\
-\subfloat[Response map of a neuron selective for helix shapes (Selectivity index = 6.37).]%
-{\includegraphics[width=0.9\linewidth]{images/fig-9b.jpg}\label{fig:9b}}
-\caption{Response maps of RBM output neurons tuned for non-Cartesian gratings.}
+\subfloat[Response map of a unit selective for a pair of circular sectors (selectivity index = 3.92).]%
+{\includegraphics[width=0.9\linewidth]{images/fig9a.jpg}\label{fig:9a}}\\
+\subfloat[Response map of a unit selective for helix shapes (Selectivity index = 6.37).]%
+{\includegraphics[width=0.9\linewidth]{images/fig9b.jpg}\label{fig:9b}}
+\caption{Response maps of RBM units tuned for non-Cartesian gratings.}
 \label{fig:9}
 \end{figure}
 
 \begin{figure}
 \centering
-\subfloat[Patterns]{\includegraphics[width=0.31\linewidth]{images/fig-10a.jpg}\label{fig:10a}}\hfil
-\subfloat[Response map]{\includegraphics[width=0.31\linewidth]{images/fig-10b.jpg}\label{fig:10b}}\hfil
-\subfloat[Response map]{\includegraphics[width=0.31\linewidth]{images/fig-10c.jpg}\label{fig:10c}}
-\caption{RBM output neurons responding to closed shapes.}
+\subfloat[Patterns]{\includegraphics[width=0.31\linewidth]{images/fig10a.jpg}\label{fig:10a}}\hfil
+\subfloat[Response map]{\includegraphics[width=0.31\linewidth]{images/fig10b.jpg}\label{fig:10b}}\hfil
+\subfloat[Response map]{\includegraphics[width=0.31\linewidth]{images/fig10c.jpg}\label{fig:10c}}
+\caption{RBM units responding to closed shapes.}
 \label{fig:10}
 \end{figure}
 
-This experiment demonstrates that our model can learn to distinguish the stimuli
-which V4 neurons are selectively tuned for.
-
-\subsection{Feature detection}
-
-In the above experiments, it has been demonstrated that a unit of the RBM hidden layer 
-can encode the shape feature in the receptive field of a single V4 computation unit.
-When we deal with larger images, especially natural images,
-a full scan over the whole image is not computationally economic.
-It also complicates succeeding processing for high-level tasks such as object recognition and scene understanding.
-We have to find some regions of interest 
-and focus the computation units over a limited number of interesting regions.
-The visual neural system takes a similar approach.
-As we have reviewed in previous sections, V4 is closely related with selective visual attention \cite{roe2012}.
-Research shows that V4 receptive field shrinks and shifts towards saccade target \cite{hamker2006}.
-We simulated such visual attention with the saliency filters in our model.
-In the following experiment,
-we evaluated the saliency filters with feature detection experiment.
-
-\begin{figure}
-\centering
-\subfloat[Car image]{\includegraphics[width=0.32\linewidth]{images/fig-11a.jpg}\label{fig:11a}}\hfil
-\subfloat[Activity map]{\includegraphics[width=0.32\linewidth]{images/fig-11c.jpg}\label{fig:11b}}\hfil
-\subfloat[Entropy map]{\includegraphics[width=0.32\linewidth]{images/fig-11e.jpg}\label{fig:11c}}\\
-\subfloat[Face image]{\includegraphics[width=0.32\linewidth]{images/fig-11b.jpg}\label{fig:11d}}\hfil
-\subfloat[Activity map]{\includegraphics[width=0.32\linewidth]{images/fig-11d.jpg}\label{fig:11e}}\hfil
-\subfloat[Entropy map]{\includegraphics[width=0.32\linewidth]{images/fig-11f.jpg}\label{fig:11f}}\\
-\subfloat[Salient points]{\includegraphics[width=0.49\linewidth]{images/fig-11g.jpg}\label{fig:11g}}\hfil
-\subfloat[Salient points]{\includegraphics[width=0.49\linewidth]{images/fig-11h.jpg}\label{fig:11h}}
-\caption{Feature detection. (a) and (d) show the original images.
-(b) and (e) are the complex cell activity. 
-Red color indicates strong activity and blue color indicates inhibition.
-(c) and (f) are the entropy map.
-Red color indicates high entropy value and blue color indicates low entropy value.
-(g) and (h) are the selected salient points
-at the scale of 4, 8, and 16 in terms of simple cell radius.}
-\label{fig:11}
-\end{figure}
-
-\figurename~\ref{fig:11} shows the process of feature detection with the saliency filters in our model.
-\figurename~\ref{fig:11b} and \figurename~\ref{fig:11d} show the activity map of complex cells.
-The activities are high in the region of the trees behind the car (\figurename~\ref{fig:11a})
-and the handwriting on the white board (\figurename~\ref{fig:11c}).
-Saliency filters filter out these regions because these regions have a comparatively high entropy.
-These areas consist of a large amount of disordered edges
-which result in a near uniform distribution of complex cell activity over preferred orientations
-and thus high entropy values.
-The saliency filters can find salient points at each given scale.
-\figurename~\ref{fig:11g} and \figurename~\ref{fig:11h} show the salient points
-at the scale of 4, 8, and 16 in terms of the simple cell radius
-(The size of the other units can be inferred with the relationship
-shown in Table \ref{tab:1}).
-
-\section{Object discrimination}
-\label{sec:5}
-
-In this section, we demonstrate the performance of the features 
-generated by our model in feature matching and object recognition tasks.
-
-We do not use typical criteria for evaluating local descriptors \cite{mikolajczyk2005}
-for the reason that the typical criteria focus on
-matching the same physical point in different viewing conditions,
-at which humans or other intelligent species
-are not significantly better than computer systems.
-The human vision excels in image understanding tasks
-such as recognizing a new instance of some category
-with only few prototypes for learning.
-Our model conforms to the neural mechanism of vision and
-thus exhibits similar learning ability in the experiments.
-
 \subsection{Feature matching}
 
-Traditional local features excel in matching features
-corresponding to the same physical point on an object
-seen from different viewpoints \cite{mikolajczyk2005}.
-These features are usually very selective for a target object
-but lack invariance with respect to different objects from a target category.
-However, the generalization ability within object categories
-is important for image understanding tasks such as object recognition.
+In this section, we demonstrate the performance of the features generated by our model in feature matching tasks.
+We do not use typical criteria for evaluating local descriptors \cite{mikolajczyk2005}
+for the reason that the typical criteria focus on matching the same physical point in different viewing conditions,
+at which humans or other intelligent species are not significantly better than computer systems.
+The human vision excels in image understanding tasks such as recognizing a new instance from some category.
+It requires generalization ability of the features.
 
-We provide a qualitative evaluation of our features
-by matching features between different images.
+We first provide a qualitative evaluation.
 The SIFT features are used for comparison.
-The VLFeat open-source library \cite{vedaldi2008}
-were utilized for the SIFT implementation 
-and the feature matching algorithm.
+The VLFeat open-source library \cite{vedaldi2010} were utilized for the SIFT implementation and the feature matching algorithm.
 
 \begin{figure}
 \centering
   \subfloat[Matching between the same face]{
-    \includegraphics[width=0.8\linewidth]{images/fig-12a.jpg}
-    \label{fig:12a}}\\
+    \includegraphics[width=0.8\linewidth]{images/fig11a.jpg}
+    \label{fig:11a}}\\
   \subfloat[Matching between different faces]{
-    \includegraphics[width=0.8\linewidth]{images/fig-12b.jpg}
-    \label{fig:12b}}
+    \includegraphics[width=0.8\linewidth]{images/fig11b.jpg}
+    \label{fig:11b}}
 \caption{Matching face images.}
-\label{fig:12}
+\label{fig:11}
 \end{figure}
 
-\figurename~\ref{fig:12} shows matchings of features in face images.
-As shown in \figurename~\ref{fig:12a},
-SIFT features match perfectly between face images of the same person.
-The neural features generated by our model achieve competitive distinctiveness.
-However, \figurename~\ref{fig:12b} shows that
-matching of SIFT features between face images of different people
-is quite disordered.
-SIFT features excel in matching highly distinctive features under image transformations 
-but lack the generalization ability 
-to capture variations in objects appearance of the same category.
-By contrast, the neural features show robust performance 
-in matching features from different faces.
-The result suggests that our model exhibits 
-both competitive discrimination ability
-and better generalization ability compared with SIFT features.
+\figurename~\ref{fig:11} shows matchings of features in face images.
+As shown in \figurename~\ref{fig:11a}, both SIFT features and neural features match perfectly between face images of the same person.
+However, \figurename~\ref{fig:11b} shows that matching of SIFT features between face images of different people is quite disordered.
+SIFT features excel in matching highly distinctive features under image transformations
+but lack the generalization ability to capture variations in objects appearance of the same category.
+By contrast, the neural features show robust performance in matching features from different faces.
+The result suggests that our model exhibits both competitive discrimination ability and better generalization ability compared with SIFT features.
 
 \begin{figure}
 \centering
   \subfloat[Our match]{
-    \includegraphics[width=0.8\linewidth]{images/fig-13a.jpg}
-    \label{fig:13a}}\\
+    \includegraphics[width=0.8\linewidth]{images/fig12a.jpg}
+    \label{fig:12a}}\\
   \subfloat[SIFT match]{
-    \includegraphics[width=0.8\linewidth]{images/fig-13b.jpg}
-    \label{fig:13b}}
+    \includegraphics[width=0.8\linewidth]{images/fig12b.jpg}
+    \label{fig:12b}}
 \caption{Comparison of feature matching between van images.}
+\label{fig:12}
+\end{figure}
+
+Another comparison in \figurename~\ref{fig:12} demonstrates
+more clearly the advantage of our model compared with SIFT feature.
+\figurename~\ref{fig:12a} shows that our model produced correct matches
+between the model van in the left and the two real vans in the right. 
+However, SIFT feature failed to produce correct matches (\figurename~\ref{fig:12b}). 
+SIFT feature utilizes the direction of image gradient. 
+It fails to capture the shape feature of an object when the object's color changes dramatically because the direction of image gradient changes with the color. 
+Our model focuses on the shape feature and thus achieves a stable matching despite the change in color.
+
+For quantitative evaluation, we use the ``Face-easy'' category from the Caltech 101 dataset \cite{fei2007}.
+This category consists of frontal face photos of many different people.
+They are all cropped to the same size and the same face location.
+The images are randomly paired for feature matching.
+A correct match between facial features should be corresponding regions in the two images.
+We use precision-recall curves to compare our neural features with the SIFT features.
+\begin{equation}
+\text{Precision} = \frac{\text{\#correct matches}}{\text{\#correct matches} + \text{\#false matches}}.
+\end{equation}
+\begin{equation}
+\text{Recall} = \frac{\text{\#correct matches}}{\text{\#all features}}.
+\end{equation}
+The result is shown in \figurename~\ref{fig:13}.
+Extensive evaluation on the generalization ability of our features is in the object recognition experiment in the next subsection.
+
+\begin{figure}
+\centerline{\includegraphics[width=0.9\linewidth]{images/fig13.jpg}} 
+\caption{Matching facial features in Caltech-101 ``Face-easy'' category.}
 \label{fig:13}
 \end{figure}
 
-Another comparison in \figurename~\ref{fig:13} demonstrates
-more clearly the advantage of our model compared with SIFT feature.
-\figurename~\ref{fig:13a} shows that our model produced correct matches
-between the model van in the left and the two real vans in the right. 
-However, SIFT feature failed to produce correct matches (\figurename~\ref{fig:13b}). 
-SIFT feature utilizes the direction of image gradient. 
-It fails to capture the shape feature of an object when
-the object's color changes dramatically because the direction of
-image gradient changes with the color. 
-Our model focuses on the shape feature and thus achieves a stable matching despite
-the change in color.
-
-
-\subsection{Object recognition layer}
-
-As we have reviewed in section 2,
-the IT cortex is where object recognition is finally achieved in the brain.
-The exact nature of the high-level visual features 
-encoded by IT neurons remains to be determined.
-Yet research shows that V4 neurons encode shapes by population responses \cite{pasupathy2002}.
-It is likely that an IT neuron collects the responses from a group of afferent V4 neurons 
-and synthesizes a unified representation of shapes.
-In our model, the object recognition layer consists of IT computation units.
-Each IT unit combines the output of several V4 units into a local image feature.
-The receptive fields of these V4 units scatter around the center of the IT receptive field.
-Though there is no anatomical evidence showing that 
-the spatial distribution of the V4 receptive fields 
-is necessarily restricted to any fixed patterns,
-in our model, we choose afferent V4 units from a group of rectangular grid points.
-Each IT unit has 9 afferent connections from the V4 layer.
-The 9 connected V4 units are located in a $3\times 3$ grid.
-\figurename~\ref{fig:13} demonstrates an IT receptive field 
-and the receptive fields of the connected V4 neurons.
-The demonstration is shown over
-the output of complex cells given the image of Lena as input.
-
-\begin{figure}
-\centering
-\includegraphics[width=0.5\linewidth]{images/fig-14.jpg}
-\caption{Demonstration of IT unit in our model. 
-IT unit combines V4 inputs in a grid layout rotated to the strongest orientation.}
-\label{fig:14}
-\end{figure}
-
-In order to achieve the invariance of feature orientations,
-the gird is rotated to the strongest orientation at the center of the receptive field.
-We have been inspired by the SIFT \cite{lowe1999} descriptor.
-The rotation is also demonstrated in \figurename~\ref{fig:14}.
-The grid is rotated to the orientation of the edge of the hat appearing at the center of the grid.
-The strongest central orientation can be obtained by taking a maximal value 
-over the output of the complex cells connected to the central V4 units.
-
-The output of an IT unit is thus defined as a concatenation of the V4 feature vectors.
-\begin{equation}
-\mathbf{F}(x,y) = \mathbf{V}(\hat{x}_1,\hat{y}_1)\|
-\mathbf{V}(\hat{x}_2,\hat{y}_2)\|
-\mathbf{V}(\hat{x}_3,\hat{y}_3)\|{}  \cdots\|
-\mathbf{V}(\hat{x}_n,\hat{y}_n),
-\end{equation}
-where $(\hat{x}_i,\hat{y}_i)^{\top} = 
-\left(\begin{array}{ccc}
-\cos\hat\theta & -\sin\hat\theta & x \\
-\sin\hat\theta & \cos\hat\theta & y
-\end{array}\right)\cdot(x_i,y_i,1)^{\top}$ for $i=1,2,3,\dots,n$ and 
-$\hat\theta = \arg\!\max_\theta C_\theta(x,y)$.
-In this equation, $\mathbf{F}$ represents the image feature generated by IT units.
-$\hat\theta$ represents the strongest orientation at the center of the receptive field,
-which is calculated over the output of complex cells $C_\theta$.
-$(\hat{x}_i,\hat{y}_i)$ is a group of rotated grid points
-indicating the centers of receptive fields of afferent V4 units.
-$(x_i,y_i)$ is a group of grid points.
-In our model, $(x_i,y_i)$ is defined as the $3\times 3$ grid points fitted 
-in a rectangular region.
-
 \subsection{Object recognition}
 
-We evaluate the performance of the proposed model
-in object recognition in clutter for which 
-the target object in both the training and test samples
-appears at variable scales and positions 
-within an unsegmented image.
+We evaluate the performance of the proposed model in object recognition in clutter for which 
+the target object in both the training and test samples appears at variable scales and positions within an unsegmented image.
+Features at the salient-points are extracted and passed to a classifier.
+We experimented with the SVM classifier and evaluated the classifier over the Caltech 101 dataset \cite{fei2007}.
 
-The bags of key-points approach \cite{csurka2004} are employed.
-Key-points are detected with the saliency sublayer of the V4 computation units in our model.
-Features at the key-points are extracted with IT units and passed to a classifier.
-We experimented with the SVM classifier
-and evaluated the classifier over the Caltech 101 dataset \cite{feifei2004}.
-
-The parameters that controls the size of simple, complex and V4 receptive field
-are summarized in \tablename~\ref{tab:1} in section 3.
-In addition to these parameters,
-the sampling density of different preferred orientations is also a parameter in our model.
-In the RBM encoder sublayer of V4 units,
-the visible RBM units collect their input from complex cells 
-with different preferred orientations.
-A sampling density of $n$ means that a preferred orientation is taken from the range
-$\{0^{\circ}, 180^{\circ}/n, 2\times 180^{\circ}/n, \dots, (n-1)\times 180^{\circ}/n\}$.
-We investigate the selection of sampling density of preferred orientations.
-30 training samples are randomly chosen from each category.
+In the RBM encoders of V4 units, the visible RBM units collect their input from complex cells with different preferred orientations.
+Therefore, we investigate the selection of sampling density of orientations (i.e., the number of different preferred orientations).
+The result is shown in \figurename~\ref{fig:14a}.
+In this experiment, 30 training samples are randomly chosen from each category.
 For each training image, 50 features are randomly chosen and passed to the classifier.
-The results reported are averaged over 8 independent runs.
+The result shows that selection of sampling density does not exhibit obvious impact on the performance.
+With a small density, we can lower the dimension of the input of RBM encoders without a significant loss in object recognition performance.
+Thus in the succeeding experiments, a sampling density of $3$ is used. 
 
 \begin{figure}
 \centering
   \subfloat[Sampling density of orientations]{
-    \includegraphics[width=0.9\linewidth]{images/fig-15a.eps}
-    \label{fig:15a}}\\
+    \includegraphics[width=0.9\linewidth]{images/fig14a.eps}
+    \label{fig:14a}}\\
   \subfloat[Number of features per image]{
-    \includegraphics[width=0.9\linewidth]{images/fig-15b.eps}
-    \label{fig:15b}}
+    \includegraphics[width=0.9\linewidth]{images/fig14b.eps}
+    \label{fig:14b}}
 \caption{Performance with different parameters.}
-\label{fig:15}
+\label{fig:14}
 \end{figure}
 
-As shown in \figurename~\ref{fig:15a},
-the selection of sampling density does not exhibit obvious impact on the performance.
-With a small density, we can lower the dimension of the input of RBM encoders
-without a significant loss in object recognition performance.
-Thus in the succeeding experiments, a sampling density of $3$ is used. 
-
-We can also manipulate the saliency threshold in the saliency sublayer of V4 units
-to change the number of key-points detected in an image,
-which inturn changes the number of features generated by IT units.
-To investigate the contribution of the number of features on performance,
-we vary the number of features chosen from each training image.
+We can also control the number of features extracted from an image by adjusting the threshold in the saliency filters. 
+To investigate the contribution of the number of features on performance, we vary the number of features chosen from each training image.
 We choose 20 training samples from each category.
-The results reported are also averaged over 8 independent runs.
-\figurename~\ref{fig:15b} shows that 
-with 50 features per image the result approaches the best performance.
-The number of required features can be notably reduced by introducing 
-a clustering step in the bag of words approach \cite{csurka2004}.
-However, Serre et al. \cite{serre2007} reported that clustering could
-be sensitive to the choice of parameters and initializations,
-leading poorer results.
+The result is shown in \figurename~\ref{fig:14b}.
+With 50 features per image the result approaches the best performance.
+In the succeeding experiments, we take 50 features from each image.
 
-The influence of the number of training samples 
-on the performance of our model is also studied.
-For each category, we randomly select training sets of size
-5,10,15,20,25 and 30.
-\figurename~\ref{fig:16a} shows the performance as
-a function of the number of training images.
-The results reported are averaged over all categories
-with 50 features extracted from each training image.
-The performance is compared with other published results.
+The influence of the number of training samples on the performance of our model is also studied.
+For each category, we randomly select training sets of size 5,10,15,20,25 and 30.
+\figurename~\ref{fig:15a} shows the performance as a function of the number of training images.
+The results reported are averaged over all categories.
+The performance is compared with other published results \cite{grauman2005,lazebnik2006,zhang2006,wang2006,bosch2007,boiman2008,liu2013,heo2014}.
 
 \begin{figure}
 \centering
   \subfloat[Comparison with other methods]{
-    \includegraphics[width=0.9\linewidth]{images/fig-16a.eps}
-    \label{fig:16a}}\\
+    \includegraphics[width=0.9\linewidth]{images/fig15a.eps}
+    \label{fig:15a}}\\
   \subfloat[Comparison with other features]{
-    \includegraphics[width=0.9\linewidth]{images/fig-16b.eps}
-    \label{fig:16b}}
+    \includegraphics[width=0.9\linewidth]{images/fig15b.eps}
+    \label{fig:15b}}
 \caption{Comparison of performance.}
-\label{fig:16}
+\label{fig:15}
 \end{figure}
 
-\figurename~\ref{fig:16b} shows
-the performance of our model over the 101 categories
-compared with SIFT features \cite{lowe1999},
-PHOW features \cite{lazebnik2006},
-and biologically inspired HMAX model \cite{serre2007}.
-The results are obtained with 30 training images randomly selected 
-from each category.
-SIFT features and neural features generated with our model
-are passed to an SVM classifier.
-The images passed to the HMAX model are resized 
-to a uniform height of 140 pixels as recommended by \cite{serre2007}.
-Our model exhibits competitive performance 
-compared with other models.
-As shown in \figurename~\ref{fig:16b},
-the SIFT performance points over the 101 categories
-are almost completely to the left of the equivalent line.
-The PHOW performance points spread through 
-a wider range from $0.5$ to $1$ indicating 
-the lack of robustness compared with our model.
-Compared with the biologically inspired HMAX model,
-our performance is also better for more than half
-of the 101 categories.
+\figurename~\ref{fig:15b} shows the performance of our model over the 101 categories
+compared with SIFT features \cite{lowe1999}, PHOW features \cite{lazebnik2006}, and biologically inspired HMAX model \cite{cadieu2007}.
+The results are obtained with 30 training images randomly selected from each category.
+Our model exhibits competitive performance compared with other models.
+As shown in \figurename~\ref{fig:15b}, the SIFT performance points over the 101 categories are almost completely to the left of the equivalent line.
+The PHOW performance points spread through a wider range from $0.5$ to $1$ indicating the lack of robustness compared with our model.
+Compared with the biologically inspired HMAX model, our performance is also better for more than half of the 101 categories.
 
-\section{Conclusion}\label{sec:6}
+\section{Discussion and conclusion}\label{sec:5}
 
 \subsection{Traditional image features}
 
