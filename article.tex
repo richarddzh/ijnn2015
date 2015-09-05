@@ -1,4 +1,4 @@
-\documentclass[10pt]{article}
+\documentclass[9pt,twocolumn]{article}
 
 \usepackage{graphicx}
 \usepackage{amsmath}
@@ -52,11 +52,8 @@ In this paper, we demonstrate a novel model of visual area V4 and its applicatio
 Experiment results show that the proposed model exhibits similar shape selectivity to that of real V4 neurons
 and it outperforms many existing methods in computer vision tasks including feature matching and image classification. 
 
-Primate brains possess two distinct visual pathways \cite{ettlinger1990}.
-The dorsal pathway is involved with processing the object's spatial location. 
-The ventral pathway is involved with object recognition.
-In this paper, we concentrate on the latter, the ventral pathway, and visual area V4 in particular.
-V4 lies in the middle of the ventral pathway (\figurename~\ref{fig:1}).
+V4 lies in the middle of the ventral visual pathway \cite{ettlinger1990}, 
+which is the neural stream involved with object recognition in the brain (\figurename~\ref{fig:1}).
 It extracts the feature of contour conformation, which represents a middle level abstraction of visual information in the brain.
 Lower levels (V1 and V2) extract features such as edges and orientations \cite{hubel1962}.
 Higher levels (inferior temporal cortex) comprehend concepts of complex objects like faces and body parts \cite{bell2009}.
@@ -68,7 +65,7 @@ As an intermediate stage, V4 plays a crucial role in transforming low-level orie
 \label{fig:1}
 \end{figure}
 
-In this paper, we propose a multi-layer neural network model which imitates the neural mechanism of visual area V4 in the ventral visual pathway.
+In this paper, we propose a multilayer neural network model which imitates the neural mechanism of visual area V4 in the ventral visual pathway.
 Different stages of the neural pathway in the visual cortex are explicitly mapped to different layers of the neural network model.
 In this feed-forward network, features are extracted hierarchically from input images.
 High-level local image features emerge in the output layer of the network. 
@@ -125,7 +122,7 @@ Therefore, with additional fine tuning, the deep model exhibits high performance
 Our proposed model employs a similar multilayer structure but combines automatic feature extraction with artificial features.
 This combined strategy allows our model to work on fewer training images.
 
-\section{Multi-layer neural network model}\label{sec:3}
+\section{Multilayer neural network model}\label{sec:3}
 
 The information processing in the visual cortex follows a hierarchical scheme.
 Our model employs a similar hierarchical structure.
@@ -138,7 +135,7 @@ Different cortical areas along the neural pathway are explicitly mapped to diffe
 \label{fig:3}
 \end{figure}
 
-\subsection{Layer of simple cells and complex cells}
+\subsection{Layers of simple cells and complex cells}
 
 According to the hierarchy of the ventral visual pathway, area V4 receives input from the lower levels including area V1 and V2.
 Neurons in V1 and V2 respond to local orientations.
@@ -258,6 +255,9 @@ With limited neural resources, only strong and competitive neuronal signals get 
 In our model, the saliency layer finds local maximums of complex cell output
 and filters out those points with high entropy values or low activities (or output values).
 The algorithm is listed in Algorithm \ref{alg:1}.
+In our experiment, the saliency filters take a threshold $t_E=2.8$ for the entropy
+and a threshold $t_A=0.4$ for complex cell output value (or complex cell activity).
+These values are roughly the median values of natural images.
 
 \begin{algorithm}
   \caption{Saliency filter}
@@ -285,99 +285,34 @@ The algorithm is listed in Algorithm \ref{alg:1}.
 
 \subsection{RBM encoders in V4 layer}
 
-With saliency filters described in the previous subsection,
-we are able to focus on a limited number of salient points.
+With saliency filters described in the previous subsection, we are able to focus on a limited number of salient points.
 The V4 computation units in our model encode the shape in the neighborhood of each salient point.
 The encoding is achieved with Restricted Boltzmann Machine (RBM).
-
-RBM can learn a probability distribution over its set of inputs.
-It has been found efficient in training deep neural network \cite{hinton2006}.
-The encoder layer in our model is part of a deep network.
-Therefore, we use the RBM as a training model for this encoder layer.
-The RBM is trained to encode shape features in the neighborhood of a salient point.
-\figurename~\ref{fig:6} shows such an RBM encoder.
-
-
-Let $(x,y)$ denote a salient point.
-For each preferred orientation, 
-we select the complex cell of which the receptive field is centered at point $(x,y)$,
-and its eight neighbors.
+RBM is widely used in unsupervised training of deep neural network \cite{bengio2009}.
+\figurename~\ref{fig:6} shows such an RBM encoder in our model.
+It encodes local shape features around a salient point, $(x,y)$.
+For each preferred orientation, we select the complex cell of which the receptive field is centered at point $(x,y)$, and its eight neighbors.
 \figurename~\ref{fig:6} demonstrates an example of three preferred orientations.
-In this case, $9\times3$ complex cells are selected.
-The number of selected neurons depends on the number of orientations we choose.
-The selected complex cells are then used as the input layer (or visible layer) of the RBM.
-The representation of the shape in the neighborhood of $(x,y)$
-is formed in the output layer (or hidden layer) of the RBM.
+In this case, $9\times3$ complex cells are selected to form the input layer (or visible layer) of the RBM.
+The output vector of the hidden layer forms a representation of local shape features.
 
 \begin{figure}
-\centerline{\includegraphics[width=0.99\linewidth]{images/fig-6.eps}} 
+\centerline{\includegraphics[width=0.99\linewidth]{images/fig6.eps}} 
 \caption{RBM encoder for local shape feature.}
 \label{fig:6}
 \end{figure}
 
-RBM can be trained efficiently with a contrastive divergence learning algorithm \cite{hinton2002}.
-Let $w_{ij}$ be the weight of the connection from the $i$-th visible unit to the $j$-th hidden unit.
+We followed \cite{hinton2010} for the training algorithm of RBM and the choice of parameters.
+Weight-decay is used to reduce overfitting by adding an L2 penalty term, $\frac{1}{2}\lambda w^2$, to the energy function.
+Let $w_{ij}$ be the connection weight between the $i$-th visible unit and the $j$-th hidden unit.
 In each learning iteration, the change in the weight is given by
-\begin{equation}
-\Delta w_{ij}=\epsilon\left(\langle v_i h_j\rangle_\text{data}-\langle v_i h_j\rangle_\text{recon}\right),
-\end{equation}
-where $\epsilon$ is a learning rate, 
-$\langle v_i h_j\rangle_\text{data}$ is the product of two units when the visible layer is given real data,
-and $\langle v_i h_j\rangle_\text{recon}$ is the product of two units 
-when the visible layer is given reconstructed data.
-
-We use weight-decay \cite{hinton2010}
-to reduce overfitting by adding an L2 penalty term, $\frac{1}{2}\lambda w^2$.
-The weight change is then given by
 \begin{equation}
 \Delta w_{ij}=\epsilon\left(\langle v_i h_j\rangle_\text{data}-\langle v_i h_j\rangle_\text{recon}\right)
 -\epsilon\lambda w_{ij},
 \end{equation}
-where $\lambda$ is a weight-cost coefficient.
-We followed \cite{hinton2010} for the choice of the coefficient $\lambda$ and the learning rate $\epsilon$
-in our experiments.
-
-The output vector of the hidden layer forms a representation of local shape features.
-It can be used directly as input for classification tasks.
-We can also use the RBM connection weight matrix to initialize a multilayer neural network
-for supervised back-propagation training.
-
-\subsection{Model Parameters}
-
-The size of the receptive field increases along the hierarchy of the visual system.
-Lower levels have relatively small receptive fields while higher levels have larger receptive fields.
-The size of receptive field in our model follows the same scheme.
-The relationship is shown in Table \ref{tab:1}.
-V4 neurons receive afferent connections from $3\times3$ complex cells
-that have partially overlapped receptive fields.
-Therefore the radius of the V4 receptive field is not 3 times as long as that of the complex cell.
-
-\begin{table}[h]
-\caption{Size of receptive field}
-\centering
-\begin{tabular}{rr}
-\toprule
-Category & Radius of receptive field \\
-\midrule
-Simple cells & $\sigma_s$ \\
-Complex cells & $\sigma_c = 2\sigma_s$ \\
-V4 RBM encoders & $2.5\sigma_c$\\
-\bottomrule
-\end{tabular}
-\label{tab:1}
-\end{table}
-
-We used two schemes for the number of different preferred orientations of simple cells and complex cells.
-For black and white images of shapes and handwritten digits in our experiment,
-we used 4 orientations (from $0^\circ$ to $135^\circ$ in steps of $45^\circ$).
-For gray scale images, we used 18 orientations (from $0^\circ$ to $170^\circ$ in steps of $10^\circ$)
-in order to preserve more information.
-
-The output of complex cells was normalized to the $[0,1]$ interval
-to serve as the input of RMB encoders.
-The saliency filters took a threshold $t_E=2.8$ for the entropy
-and a threshold $t_A=0.4$ for complex cell output value (or complex cell activity).
-These values were roughly the median values of natural images.
+where $\epsilon$ is the learning rate, $\lambda$ is the weight-cost coefficient,
+$\langle v_i h_j\rangle_\text{data}$ is the product of two units when the visible layer is given real data,
+and $\langle v_i h_j\rangle_\text{recon}$ is the product of two units when the visible layer is given reconstructed data.
 
 \section{Shape-based feature extraction}\label{sec:4}
 
