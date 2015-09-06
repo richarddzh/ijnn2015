@@ -59,7 +59,7 @@ Lower levels (V1 and V2) extract features such as edges and orientations \cite{h
 Higher levels (inferior temporal cortex) comprehend concepts of complex objects like faces and body parts \cite{bell2009}.
 As an intermediate stage, V4 plays a crucial role in transforming low-level orientation signals into complex object representations.
 
-\begin{figure}
+\begin{figure}[!t]
 \centerline{\includegraphics[width=0.8\linewidth]{images/fig1.jpg}} 
 \caption{V4 is an intermediate stage in visual recognition.}
 \label{fig:1}
@@ -92,7 +92,7 @@ They generally prefer complex features to simple features such as bars and sinus
 Most V4 neurons are tuned for the curvature and orientation of boundary fragments \cite{pasupathy2001}.
 Therefore, unlike neurons in V1, V4 neurons can not be modeled with linear filters.
 
-\begin{figure}
+\begin{figure}[!t]
 \centering
 \subfloat[]{\includegraphics[width=0.18\linewidth]{images/fig2a.jpg}\label{fig:2a}}\hfil
 \subfloat[]{\includegraphics[width=0.36\linewidth]{images/fig2b.jpg}\label{fig:2b}}\hfil
@@ -129,7 +129,7 @@ Our model employs a similar hierarchical structure.
 Different cortical areas along the neural pathway are explicitly mapped to different layers in our model. 
 \figurename~\ref{fig:3} shows the architecture of our model.
 
-\begin{figure}
+\begin{figure}[!t]
 \centerline{\includegraphics[width=\linewidth]{images/fig3.eps}} 
 \caption{Multilayer neural network model of V4.}
 \label{fig:3}
@@ -217,7 +217,7 @@ The charts show the distribution of complex cell activities.
 The entropy calculated accordingly indicates that patches composed of geometrically ordered structures have non-uniform distributions and thus low entropy values.
 Therefore, we filter out regions with high entropy.
 
-\begin{figure}
+\begin{figure}[!t]
 \centerline{\includegraphics[width=0.8\linewidth]{images/fig4.jpg}} 
 \caption{Entropy of image patches.
 Bar charts in the second row show the output values of complex cells
@@ -262,7 +262,7 @@ These regions have little shape features but the activity map of complex cells c
 Disordered edges result in high entropy values because the distribution of complex cell activity over different orientations is near uniform.
 Saliency filters filter out these regions by applying a threshold to the entropy map.
 
-\begin{figure}
+\begin{figure}[!t]
 \centering
 \subfloat[Car image]{\includegraphics[width=0.32\linewidth]{images/fig5a.jpg}\label{fig:5a}}\hfil
 \subfloat[Activity map]{\includegraphics[width=0.32\linewidth]{images/fig5c.jpg}\label{fig:5b}}\hfil
@@ -293,7 +293,7 @@ For each preferred orientation, we select the complex cell of which the receptiv
 In this case, $9\times3$ complex cells are selected to form the input layer (or visible layer) of the RBM.
 The output vector of the hidden layer forms a representation of local shape features.
 
-\begin{figure}
+\begin{figure}[!t]
 \centerline{\includegraphics[width=0.99\linewidth]{images/fig6.eps}} 
 \caption{RBM encoder for local shape feature.}
 \label{fig:6}
@@ -327,7 +327,7 @@ It was then trained to distinguish between two shapes shown in \figurename~\ref{
 The shapes were also used to examine the selectivity of V4 in \cite{pasupathy2001}.
 The difference between the two shapes is that one has a sharp corner towards the top right.
 
-\begin{figure}
+\begin{figure}[!t]
 \centering
 \subfloat[Response map]{\includegraphics[width=0.48\linewidth]{images/fig7a.jpg}\label{fig:7a}}\hfil
 \subfloat[Weight matrices]{\includegraphics[width=0.48\linewidth]{images/fig7b.jpg}\label{fig:7b}}
@@ -396,15 +396,13 @@ A single unit may possess more than one kind of selectivity simultaneously.
 \begin{table}[h]
 \caption{Shape selectivity of our model}
 \centering
-\begin{tabular}{rrr}
-\toprule
-Selectivity & \#Units & Percentage \\
-\midrule
-Sinusoidal gratings & 50 & 19.5\% \\
-Non-Cartesian gratings & 55 & 21.5\% \\
-Segmented curves & 102 & 39.8\% \\
-Closed shapes & 68 & 26.6\% \\
-\bottomrule
+\begin{tabular}{|r|r|r|}
+\hline
+Selectivity & \#Units & Percentage \\\hline
+Sinusoidal gratings & 50 & 19.5\% \\\hline
+Non-Cartesian gratings & 55 & 21.5\% \\\hline
+Segmented curves & 102 & 39.8\% \\\hline
+Closed shapes & 68 & 26.6\% \\\hline
 \end{tabular}
 \label{tab:1}
 \end{table}
@@ -419,7 +417,7 @@ Both of the two units were not sensitive to sinusoidal gratings.
 \figurename~\ref{fig:10} shows the sample patterns of closed shapes and the response map of two units selectively tuned for two kinds of shapes.
 They were sensitive to the angular position of the shapes \cite{pasupathy2001}.
 
-\begin{figure}
+\begin{figure}[!t]
 \centering
 \subfloat[]{\includegraphics[width=0.24\linewidth]{images/fig8a.jpg}\label{fig:8a}}\hfil
 \subfloat[]{\includegraphics[width=0.24\linewidth]{images/fig8b.jpg}\label{fig:8b}}\hfil
@@ -431,7 +429,7 @@ They were sensitive to the angular position of the shapes \cite{pasupathy2001}.
 \label{fig:8}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!t]
 \centering
 \subfloat[Response map of a unit selective for a pair of circular sectors (selectivity index = 3.92).]%
 {\includegraphics[width=0.9\linewidth]{images/fig9a.jpg}\label{fig:9a}}\\
@@ -441,7 +439,7 @@ They were sensitive to the angular position of the shapes \cite{pasupathy2001}.
 \label{fig:9}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!t]
 \centering
 \subfloat[Patterns]{\includegraphics[width=0.31\linewidth]{images/fig10a.jpg}\label{fig:10a}}\hfil
 \subfloat[Response map]{\includegraphics[width=0.31\linewidth]{images/fig10b.jpg}\label{fig:10b}}\hfil
@@ -460,10 +458,10 @@ The human vision excels in image understanding tasks such as recognizing a new i
 It requires generalization ability of the features.
 
 We first provide a qualitative evaluation.
-The SIFT features are used for comparison.
+The SIFT features \cite{lowe1999} are used for comparison.
 The VLFeat open-source library \cite{vedaldi2010} were utilized for the SIFT implementation and the feature matching algorithm.
 
-\begin{figure}
+\begin{figure}[!t]
 \centering
   \subfloat[Matching between the same face]{
     \includegraphics[width=0.8\linewidth]{images/fig11a.jpg}
@@ -483,7 +481,7 @@ but lack the generalization ability to capture variations in objects appearance 
 By contrast, the neural features show robust performance in matching features from different faces.
 The result suggests that our model exhibits both competitive discrimination ability and better generalization ability compared with SIFT features.
 
-\begin{figure}
+\begin{figure}[!t]
 \centering
   \subfloat[Our match]{
     \includegraphics[width=0.8\linewidth]{images/fig12a.jpg}
@@ -519,8 +517,8 @@ We use precision-recall curves to compare our neural features with the SIFT feat
 The result is shown in \figurename~\ref{fig:13}.
 Extensive evaluation on the generalization ability of our features is in the object recognition experiment in the next subsection.
 
-\begin{figure}
-\centerline{\includegraphics[width=0.9\linewidth]{images/fig13.jpg}} 
+\begin{figure}[!t]
+\centerline{\includegraphics[width=0.9\linewidth]{images/fig13.eps}} 
 \caption{Matching facial features in Caltech-101 ``Face-easy'' category.}
 \label{fig:13}
 \end{figure}
@@ -541,7 +539,7 @@ The result shows that selection of sampling density does not exhibit obvious imp
 With a small density, we can lower the dimension of the input of RBM encoders without a significant loss in object recognition performance.
 Thus in the succeeding experiments, a sampling density of $3$ is used. 
 
-\begin{figure}
+\begin{figure}[!t]
 \centering
   \subfloat[Sampling density of orientations]{
     \includegraphics[width=0.9\linewidth]{images/fig14a.eps}
@@ -566,7 +564,7 @@ For each category, we randomly select training sets of size 5,10,15,20,25 and 30
 The results reported are averaged over all categories.
 The performance is compared with other published results \cite{grauman2005,lazebnik2006,zhang2006,wang2006,bosch2007,boiman2008,liu2013,heo2014}.
 
-\begin{figure}
+\begin{figure}[!t]
 \centering
   \subfloat[Comparison with other methods]{
     \includegraphics[width=0.9\linewidth]{images/fig15a.eps}
@@ -588,68 +586,56 @@ Compared with the biologically inspired HMAX model, our performance is also bett
 
 \section{Discussion and conclusion}\label{sec:5}
 
-\subsection{Traditional image features}
+\begin{table*}[!t]
+\caption{Comparison of different models}
+\centering
+\small
+\begin{tabular}{|p{0.15\linewidth}|p{0.22\linewidth}|p{0.22\linewidth}|p{0.22\linewidth}|}
+\hline
+& Our model & HMAX & Deep learning \\\hline
+Number of layers & 3 & 2 & $2\sim8$ \\
+& ($+$ saliency filters) & ($+2$ pooling layers) & ($+2\sim3$ pooling layers)\\\hline
+Input images & various size & various size & fixed size \\
+& (multi-scale salient point detector) & (full-scan with fixed-size window) & \\\hline
+Training samples & $5\sim50$ & $5\sim50$ & $>10^4$ \\
+& (per category) & (per category) & (for unsupervised pre-training) \\\hline
+Training & restricted Boltzmann & greedy search for fitting & restricted Boltzmann \\
+algorithms & machine (only V4 layer) & V4 neuron; radial basis function network for image feature extraction & machine (all layers) \\\hline
+\end{tabular}
+\label{tab:2}
+\end{table*}
 
-The model proposed in this paper is a biologically motivated model for image feature extraction.
-As reviewed in \cite{mikolajczyk2005}, traditional image features fall into three categories: 
-distribution-based descriptors, spatial-frequency descriptors and differential-based descriptors.
-Distribution-based descriptors use histograms to represent characteristics of local image regions.
-SIFT descriptor \cite{lowe1999} and shape context \cite{belongie2002} are typical examples of such descriptors.
-Spatial-frequency descriptors and differential-based descriptors use filters and derivatives to capture the invariant features. 
-Examples of these categories are complex filters \cite{schaffalitzky2002} and Baumberg's affine invariant descriptor \cite{baumberg2000}.
-These traditional image features utilize flat models which compute features directly from the image via statistical or algebraic techniques. 
-They have little in common with the neural systems.
+The model proposed in this paper is a biologically motivated model for shape-based image feature extraction.
+Traditional image descriptors utilize flat models which extract features directly from the image via statistical or algebraic techniques \cite{mikolajczyk2005}. 
 On the contrary, our proposed model simulates the biological vision in the level of neural mechanism.
-It is a multilayer model which employs the hierarchical structure of neural systems and extracts information from simple features to gradually complex features. 
+Its multilayer structure resembles the neural systems and extracts information from simple features to gradually more complex features. 
 
-This process requires a large number of training samples (\cite{krizhevsky2012} uses 1.2 million training images)
-and a neural network of very large scale (In \cite{krizhevsky2012}, the network has 8 layers and more than 400,000 neurons).
-Deep learning can be viewed as automatic feature extraction.
-In our proposed model, we combine automatic feature extraction with artificial feature extraction.
+Previous work on biologically inspired models shows that efficient object recognition algorithms can be developed 
+based on the representation generated by the primary visual cortex \cite{wei2014,wei2014b,zhao2013}.
+In this paper, we investigate deeper into higher levels of the visual cortex.
+We simulate the shape selectivity in area V4 because the shape or contour of an object is generally stable and invariant, which provides a good basis for recognition.
+
+The HMAX model \cite{cadieu2007} and the deep learning model \cite{bengio2009}, which both draw inspiration from the neural systems, 
+construct similar multilayer structures.
+In particular, the deep model exhibits high performance in classifying very large image database \cite{krizhevsky2012}.
+However, a deep model is a neural network of very large scale (In \cite{krizhevsky2012}, the network has 8 layers and more than 400,000 neurons),
+and training such a model generally requires a large number of training samples (\cite{krizhevsky2012} uses 1.2 million training images).
+Deep learning is a process of fully automatic feature extraction.
+Limited training samples can not provide enough variety to keep the model from over-fitting.
+The HMAX model consists of fewer layers and only one layer (S2 layer) is trainable, which allows the model to work on limited train samples.
+In our proposed model, we combine these two approach.
 With prior knowledge of the cortical neurons, we manually design the layers corresponding to the primary visual cortex
 and V4 features are automatically extracted based on the output of the artificially designed network.
-This strategy saves us from retraining the first layers every time
-and it allows the model to work on limited number of training images.
+This strategy saves us from retraining the first layers every time.
+Additionally, we implement a layer of saliency filters to detect key-points in images,
+which enables our model to process images of various sizes efficiently. 
+In \tablename~\ref{tab:2}, we summarize the comparison of the three models.
 
-In this paper, we propose a novel model for the visual area V4.
-It is based on the neural mechanism of the ventral visual pathway.
-We focus on visual attention and shape selectivity in V4.
-V4 in our model is implemented as a multilayer neural network 
-which selects salient points and encodes the shape feature in the neighborhood of the salient points.
-We demonstrate a variety of experiments in which the model was evaluated.
-The results show that the proposed model is consistent with the shape selectivity of area V4.
-It can find salient points in images and encode local shape feature into a discriminative representation.
-
-We further evaluate our model in object recognition experiment.
-We designed a image descriptor which synthesizes several V4 computation units
-into an IT unit to produce a set of invariant local image features.
-Compared with traditional image descriptors,
-the proposed model shows competitive performance in object recognition experiment. 
-It captures the essential shape feature of objects
-and thus achieves a good balance between discrimination and generalization.
-
-\begin{figure}
-\centering
-\includegraphics[width=0.9\linewidth]{images/fig-17.jpg}
-\caption{Framework of the proposed model.}
-\label{fig:17}
-\end{figure}
-
-The framework of the proposed multilayer neural network model is shown in \figurename~\ref{fig:17}.
-Our contribution is focused on the V4 layer,
-where salient shape features are detected and located,
-and the features are encoded and further synthesized to produce discriminative representation of object shapes.
-The proposed model demonstrates a successful attempt to construct model of the ventral visual pathway
-in the brain for visual discrimination.
-We explicitly adopt the model of several layers of this pathway,
-including well studied lower-level layers, such as simple cells and complex cells.
-We focus our work on V4, which is significant but lacks mature computation models.
-
-Future work should involve improvement of the IT unit and further evaluation on learning and detection shapes.
-The implementation of the IT unit should conform to neural mechanism
-and should be capable of learning generalized representation of shape categories.
-Information about color and texture of objects is also very important,
-which should also participate in the process of object discrimination.
+Future work should involve further investigation into the visual systems and extensive evaluation on shape-based object detection.
+Currently the model extracts only shape-based features.
+Information about color and texture is also very important, which should also participate in the process of visual recognition.
+The proposed model is a feed-forward network.
+We should also consider the function of feedback connections in the neural systems.
 These show the direction of our future work.
 
 \bibliographystyle{unsrt}
