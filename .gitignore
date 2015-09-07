@@ -6,4 +6,5 @@
 *.blg
 *.out
 article.pdf
+*.synctex.gz
 *eps-converted-to.pdf

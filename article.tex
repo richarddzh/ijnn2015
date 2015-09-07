@@ -622,21 +622,16 @@ However, a deep model is a neural network of very large scale (In \cite{krizhevs
 and training such a model generally requires a large number of training samples (\cite{krizhevsky2012} uses 1.2 million training images).
 Deep learning is a process of fully automatic feature extraction.
 Limited training samples can not provide enough variety to keep the model from over-fitting.
-The HMAX model consists of fewer layers and only one layer (S2 layer) is trainable, which allows the model to work on limited train samples.
-In our proposed model, we combine these two approach.
-With prior knowledge of the cortical neurons, we manually design the layers corresponding to the primary visual cortex
-and V4 features are automatically extracted based on the output of the artificially designed network.
+The HMAX model consists of fewer layers and only one layer (S2 layer) is trainable, which allows the model to work on limited training samples.
+In the proposed model, we combine these two approaches.
+The layers corresponding to the primary visual cortex is artificially designed with prior knowledge of the cortical neurons.
+V4 features are automatically extracted based on the output of the artificially designed network.
 This strategy saves us from retraining the first layers every time.
 Additionally, we implement a layer of saliency filters to detect key-points in images,
-which enables our model to process images of various sizes efficiently. 
+which enables the model to process images of various sizes efficiently. 
 In \tablename~\ref{tab:2}, we summarize the comparison of the three models.
 
 Future work should involve further investigation into the visual systems and extensive evaluation on shape-based object detection.
-Currently the model extracts only shape-based features.
-Information about color and texture is also very important, which should also participate in the process of visual recognition.
-The proposed model is a feed-forward network.
-We should also consider the function of feedback connections in the neural systems.
-These show the direction of our future work.
 
 \bibliographystyle{unsrt}
 \bibliography{ref}
