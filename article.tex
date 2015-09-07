@@ -49,7 +49,7 @@ However, humans and primates outperform any existing computer vision system with
 Though the neural mechanism of vision has not been fully revealed,
 recent research on neuroscience do provide many inspiring discoveries which would help development of computer vision algorithms.
 In this paper, we demonstrate a novel model of visual area V4 and its application to shape-based feature extraction and object discrimination.
-Experiment results show that the proposed model exhibits similar shape selectivity to that of real V4 neurons
+Experimental results show that the proposed model exhibits similar shape selectivity to that of real V4 neurons
 and it outperforms many existing methods in computer vision tasks including feature matching and object recognition. 
 
 V4 lies in the middle of the ventral visual pathway \cite{ettlinger1990}, 
@@ -72,12 +72,12 @@ High-level local image features emerge in the output layer of the network.
 The features encode local structures of object shapes in a way which closely resembles the mechanism of the cortex.
 With a limited number of training images, the model can learn to distinguish between different categories of objects.
 Moreover, this multilayer neural network shows a successful attempt to integrate different stages of visual processing in the brain. 
-It provides an extensible framework so that future findings in cortex mechanisms can be adopted and applied to computer vision tasks.
+It provides an extensible framework so that future findings in cortical mechanisms can be adopted and applied to computer vision tasks.
 
-We briefly introduce some related work on image features and V4 models in section~\ref{sec:2}.
-In section~\ref{sec:3}, we give the detailed description of our proposed model.
+We briefly introduce some related work on V4 models in section~\ref{sec:2}.
+In section~\ref{sec:3}, we give the detailed description of the proposed model.
 It is capable of locating salient points and generating discriminative local shape features around salient points.
-In section~\ref{sec:4}, we show several experiments in which we evaluate the proposed model.
+In section~\ref{sec:4}, we show several experiments in which we evaluate the model.
 The model is compared with real V4 neurons in a shape distinction experiment.
 The features extracted by the model are applied to various computer vision tasks.
 The discussion and conclusion is summarized in section~\ref{sec:5}.
@@ -168,7 +168,7 @@ u & \text{if } u>0,\\
 \end{array}\right.
 \end{equation}
 
-Complex cells are modeled as Gaussian filters which take inputs from simple cells,
+Complex cells are modeled as Gaussian filters which take input from simple cells,
 \begin{equation}
 f(x,y;\sigma_c)=\frac{1}{2\pi\sigma_c^2}\exp\left(-\frac{x^2+y^2}{2\sigma_c^2}\right),
 \end{equation}
