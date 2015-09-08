@@ -74,6 +74,7 @@ With a limited number of training images, the model can learn to distinguish bet
 Moreover, this multilayer neural network shows a successful attempt to integrate different stages of visual processing in the brain. 
 It provides an extensible framework so that future findings in cortical mechanisms can be adopted and applied to computer vision tasks.
 
+The rest of the paper is organized as follows.
 We briefly introduce some related work on V4 models in section~\ref{sec:2}.
 In section~\ref{sec:3}, we give the detailed description of the proposed model.
 It is capable of locating salient points and generating discriminative local shape features around salient points.
@@ -84,7 +85,7 @@ The discussion and conclusion is summarized in section~\ref{sec:5}.
 
 \section{Related work}\label{sec:2}
 
-In this section, we briefly review some existing models of V4 and other related models.
+In this section, we briefly review some existing models of V4 and the deep learning model.
 
 V4 neurons have been examine with different varieties of visual stimuli, including light bars, sinusoidal gratings~(\figurename~\ref{fig:2a}),
 non-Cartesian gratings~(\figurename~\ref{fig:2b}), and closed shapes~(\figurename~\ref{fig:2c}) \cite{gallant1996,pasupathy2001}.
@@ -103,7 +104,7 @@ Therefore, unlike neurons in V1, V4 neurons can not be modeled with linear filte
 \end{figure}
 
 Several models have been proposed for V4 neurons.
-We briefly introduce the SRF model \cite{david2006} and the HMAX model \cite{cadieu2007}.
+We focus on two popular models, i.e., the SRF model \cite{david2006} and the HMAX model \cite{cadieu2007}.
 The spectral receptive field (SRF) \cite{david2006} describes properties of V4 receptive field in terms of the orientation and spatial frequency spectrum.
 This model is powerful in describing the shape selectivity of V4 neurons.
 However, it does not provide any computational or neural mechanism to achieve V4 selectivity via spectral receptive field.
@@ -142,7 +143,7 @@ Neurons in V1 and V2 respond to local orientations.
 They fall into two categories, simple cells and complex cells.
 A simple cell is activated when an edge stimulus is presented in its receptive field with appropriate orientation and position.
 Complex cells have larger receptive fields.
-A stimulus is effective wherever it is placed in the complex receptive field, provided that the orientation is appropriate \cite{hubel1962}.
+A stimulus is effective wherever it is placed in the receptive field, provided that the orientation is appropriate \cite{hubel1962}.
 
 In our model, simple cells are modeled as Gabor functions,
 \begin{equation}\label{equ:gabor}
@@ -155,7 +156,7 @@ In the equation, $\lambda$ is the wavelength of the sinusoidal factor,
 $\theta$ represents the preferred orientation,
 and $\sigma_s$ approximates the radius of the receptive fields.
 
-Simple cells operates on raw image input. 
+Simple cells operate on raw image input. 
 The output of simple cells with preferred orientation $\theta$ and scale $\sigma_s$ is the following convolution passed through a transfer function $\phi$,
 \begin{equation}\label{equ:gabor}
 S_{\theta,\sigma_s}(x,y)=\phi(I\otimes g_{\theta,\sigma_s}),
@@ -174,7 +175,7 @@ f(x,y;\sigma_c)=\frac{1}{2\pi\sigma_c^2}\exp\left(-\frac{x^2+y^2}{2\sigma_c^2}\r
 \end{equation}
 where $\sigma_c$ represents the radius of the complex receptive fields.
 The radius of complex receptive field is approximately twice as long as that of a simple cell.
-We take this size because qualitatively the complex receptive fields are usually two to five times wider 
+We take this size because the complex receptive fields are usually two to five times wider 
 than the bars of gratings that stimulate them most effectively \cite{hubel1962}.
 In this paper, we have $\sigma_c=2\sigma_s$.
 
@@ -188,19 +189,20 @@ In the HMAX model \cite{riesenhuber1999} and the deep convolutional neural netwo
 Pooling features over a local neighborhood can create invariance to small transformations of the input \cite{boureau2010}.
 In our model, complex cells carry out similar function.
 The operation can be viewed as a Gaussian-weighted average pooling.
-We choose weighted average pooling because average pooling can be efficiently calculated with artificial neurons
-and weighted average gives the complex cell's receptive field a smooth and circular boundary.  
+We choose this pooling method because 
+(1) the Gaussian weight function gives the pooling region (i.e., the receptive field of complex cells) a smooth and circular boundary
+and (2) average pooling can be efficiently calculated with artificial neurons.  
 
 \subsection{Saliency filters in V4 layer}
 
 Visual attention involves selecting an interested region or selecting specific object features.
 Area V4 shows selective attention based on spatial location \cite{desimone1995}.
 The underlying neural mechanism is unknown.
-V4 neurons exhibit preference for geometrically ordered stimuli \cite{sasaki2005}.
+However, research suggests that V4 neurons exhibit preference for geometrically ordered stimuli \cite{sasaki2005}.
 Therefore we use entropy (a measure of disorder) to measure the saliency of images.
 The entropy is calculated according to the output of complex cells.
-Given a point $(x,y)$, in the neighborhood of $(x,y)$,
-a complex cell with preferred orientation $\theta$ has output value $C_{\theta}(x,y)$,
+In the neighborhood of a given point $(x,y)$,
+a complex cell with the preferred orientation $\theta$ has output value $C_{\theta}(x,y)$,
 We suppose that the probability of a complex cell being activated is proportional to the output value.
 The probability is thus defined as:
 \begin{equation}
@@ -214,8 +216,9 @@ E=-\sum_{\theta} P(\theta) \log P(\theta).
 \figurename~\ref{fig:4} shows four image patches.
 For each image patch, the output values of complex cells with different preferred orientations (from $0^\circ$ to $180^\circ$) are plotted in a bar chart.
 The charts show the distribution of complex cell activities.
-The entropy calculated accordingly indicates that patches composed of geometrically ordered structures have non-uniform distributions and thus low entropy values.
-Therefore, we filter out regions with high entropy.
+Patches composed of geometrically ordered structures have non-uniform distributions, which result in low entropy values.
+These patches contain salient shape features which should be extracted.
+Conversely, patches with high entropy values should be filtered out.
 
 \begin{figure}[!t]
 \centerline{\includegraphics[width=0.8\linewidth]{images/fig4.jpg}} 
@@ -256,10 +259,9 @@ These values are roughly the median values of natural images.
   \end{algorithmic}
 \end{algorithm}
 
-\figurename~\ref{fig:5} shows the process of feature detection.
+\figurename~\ref{fig:5} demonstrates the process of detecting salient points.
 Saliency filters successfully filter out the trees and handwriting at the background of the images.
-These regions have little shape features but the activity map of complex cells contains high values caused by a large amount of disordered edges. 
-Disordered edges result in high entropy values because the distribution of complex cell activity over different orientations is near uniform.
+In these regions, disordered edges result in high entropy values because the distribution of complex cell activity over different orientations is near uniform.
 Saliency filters filter out these regions by applying a threshold to the entropy map.
 
 \begin{figure}[!t]
@@ -272,7 +274,7 @@ Saliency filters filter out these regions by applying a threshold to the entropy
 \subfloat[Entropy map]{\includegraphics[width=0.32\linewidth]{images/fig5f.jpg}\label{fig:5f}}\\
 \subfloat[Salient points]{\includegraphics[width=0.49\linewidth]{images/fig5g.jpg}\label{fig:5g}}\hfil
 \subfloat[Salient points]{\includegraphics[width=0.49\linewidth]{images/fig5h.jpg}\label{fig:5h}}
-\caption{Feature detection. (a)(d) Original images.
+\caption{Detecting salient points. (a)(d) Original images.
 (b)(e) Complex cell activity map. 
 (c)(f) Entropy map.
 In the maps, red color indicates high value and blue color indicates low value.
@@ -299,7 +301,7 @@ The output vector of the hidden layer forms a representation of local shape feat
 \label{fig:6}
 \end{figure}
 
-We followed \cite{hinton2010} for the training algorithm of RBM and the choice of parameters.
+We follow \cite{hinton2010} for the training algorithm of RBM and the choice of parameters.
 Weight-decay is used to reduce overfitting by adding an L2 penalty term, $\frac{1}{2}\lambda w^2$, to the energy function.
 Let $w_{ij}$ be the connection weight between the $i$-th visible unit and the $j$-th hidden unit.
 In each learning iteration, the change in the weight is given by
@@ -313,7 +315,7 @@ and $\langle v_i h_j\rangle_\text{recon}$ is the product of two units when the v
 
 \section{Experiments}\label{sec:4}
 
-In this section, we demonstrate several experiments.
+In this section, we demonstrate four experiments.
 The first two experiments show that the shape selectivity of our model conforms to that of real V4 neurons.
 The following experiments evaluate our model in feature matching and object recognition tasks.
 
@@ -322,9 +324,9 @@ The following experiments evaluate our model in feature matching and object reco
 With this experiment, we demonstrate that artificial neurons which take input directly from complex cells can imitate neuronal response pattern of V4.
 Therefore, it is feasible that we use a single layer of RBM to extract V4 features from complex cells.
 
-In the experiment, a perceptron was configured to take complex cells as input.
-It was then trained to distinguish between two shapes shown in \figurename~\ref{fig:7a}.
-The shapes were also used to examine the selectivity of V4 in \cite{pasupathy2001}.
+In the experiment, a perceptron is configured to take complex cells as input.
+It is then trained to distinguish between two shapes shown in \figurename~\ref{fig:7a}.
+The shapes have been used to examine the selectivity of V4 neurons in \cite{pasupathy2001}.
 The difference between the two shapes is that one has a sharp corner towards the top right.
 
 \begin{figure}[!t]
@@ -332,30 +334,29 @@ The difference between the two shapes is that one has a sharp corner towards the
 \subfloat[Response map]{\includegraphics[width=0.48\linewidth]{images/fig7a.jpg}\label{fig:7a}}\hfil
 \subfloat[Weight matrices]{\includegraphics[width=0.48\linewidth]{images/fig7b.jpg}\label{fig:7b}}
 \caption{Response map and weight matrices of a perceptron that distinguishes two shapes.
-(a) Responses of the perceptron over 18 samples.
-The perceptron prefers the shape in the left half of the samples.
-It is insensitive to stimulus position.
+(a) The perceptron prefers the shape in the left half of the samples.
+It is insensitive to small changes in the position of the shape.
 (b) The input weight of the perceptron. 
 Each block shows the weight of connections from complex cells of a certain orientation.
 Complex cells of 18 different orientations provide input for this perceptron.}
 \label{fig:7}
 \end{figure}
 
-Since V4 neurons show a certain degree of invariance in stimulus position,
-we moved the shapes randomly within the receptive field of the perceptron 
+To examine the invariance to small changes in position,
+we move the shapes randomly within the receptive field of the perceptron 
 to generate samples for training and testing (\figurename~\ref{fig:7a} shows several samples).
-The samples were then used as input of the layers of simple cells and complex cells.
-The output of complex cells were passed to the perceptron.
-We had complex cells with 18 different preferred orientations (from $0^\circ$ to $170^\circ$ in steps of $10^\circ$) 
-and over different positions in the V4 receptive field.
-Therefore, the input of the perceptron consisted of 18 matrices, 
+The samples are then used as input of the layers of simple cells and complex cells.
+The output of complex cells are passed to the perceptron.
+Complex cells with 18 different preferred orientations (from $0^\circ$ to $170^\circ$ in steps of $10^\circ$) 
+cover different positions in the V4 receptive field.
+Therefore, the input of the perceptron consists of 18 matrices, 
 each corresponding to the output of complex cells with a certain orientation.
-The input weight of the perceptron was thus also 18 matrices.
+The input weight of the perceptron is also 18 matrices.
 
-The trained perceptron exhibited a strong bias towards the shape with a sharp corner towards the top right.
-It also showed a significant degree of invariance to the stimulus position.
+The trained perceptron exhibits a strong bias towards the shape with a sharp corner towards the top right.
+It also shows a significant degree of invariance to the stimulus position.
 It is obvious that this kind of selectivity is not formed from certain excitatory sub-regions
-or inhibitory sub-regions of the receptive field which was found of simple cells \cite{hubel1962,pasupathy2001}.
+or inhibitory sub-regions of the receptive field which has been found of simple cells \cite{hubel1962,pasupathy2001}.
 The selectivity of the perceptron tallies with the selectivity of actual V4 neurons.
 The response map is shown in \figurename~\ref{fig:7a}.
 Darker background colors indicate stronger responses.
@@ -367,28 +368,27 @@ This experiment demonstrates that complex cells provide sufficient information f
 
 \subsection{Shape selectivity}
 
-In the following experiment, we trained our model to learn shapes.
-After training, our model can distinguish the stimuli which V4 neurons are selectively tuned for.
-The training samples were collected from \cite{gallant1996,pasupathy1999,pasupathy2001}, 
+In the following experiment, the proposed model is trained to exhibit the shape selectivity found of V4 neurons.
+The training samples are collected from \cite{gallant1996,pasupathy1999,pasupathy2001}, 
 including 4 categories of stimuli, i.e., sinusoidal gratings, non-Cartesian gratings, segmented curves, and closed shapes.
-The training process involved the layers of simple cells, complex cells and RBM encoders.
-Since each sample image was fitted into a single V4 receptive field, the saliency filters were not involved in this experiment.
+The training process involves the layers of simple cells, complex cells and RBM encoders.
+Since each sample image is fitted into a single V4 receptive field, the saliency filters are not involved in this experiment.
 
-We used an RBM with 256 hidden units in this experiment.
-In order to assess the selectivity of these units, we assigned each unit a selectivity index over a category of stimuli.
+An RBM with 256 hidden units is used in this experiment.
+In order to assess the selectivity of these units, we assign each unit a selectivity index over a category of stimuli.
 The selectivity index is defined as the ratio of the maximal response to the average response over the stimuli of a certain category.
 Given an RBM output unit $h$ and its output value $h_i$ over the $i$-th stimulus in a category of $N$ stimuli.
 The selectivity index $\mathcal{S}$ of $h$ is given by
 \begin{equation}
 \mathcal{S}(h)=\frac{\max\{h_i|i=1,2,\dots,N\}}{\sum_{i=1}^N h_i/N}.
 \end{equation}
-In the following statistics, we assumed that a unit has significant selectivity over a category of stimuli
+In the following statistics, it is assumed that a unit has significant selectivity over a category of stimuli
 if its selectivity index is greater than the average index.
-Among the 256 units, 171 units exhibited significant selectivity for different stimuli.
-102 units showed selectivity for segmented curves (\figurename~\ref{fig:8}).
-55 units showed strong bias towards non-Cartesian gratings (\figurename~\ref{fig:9})
-while 50 units showed selectivity for classical sinusoidal gratings.
-68 units exhibited selectivity for closed shapes (\figurename~\ref{fig:10}).
+Among the 256 units, 171 units exhibit significant selectivity for different stimuli.
+102 units show selectivity for segmented curves (\figurename~\ref{fig:8}).
+55 units show strong bias towards non-Cartesian gratings (\figurename~\ref{fig:9})
+while 50 units show selectivity for classical sinusoidal gratings.
+68 units exhibit selectivity for closed shapes (\figurename~\ref{fig:10}).
 The shape selectivity of our model is listed in \tablename~\ref{tab:1}.
 The categories of selectivity are not mutually disjoint.
 A single unit may possess more than one kind of selectivity simultaneously.
@@ -407,15 +407,15 @@ Closed shapes & 68 & 26.6\% \\\hline
 \label{tab:1}
 \end{table}
 
-\figurename~\ref{fig:8} show three response maps to segmented curves.
+\figurename~\ref{fig:8} shows three response maps to segmented curves.
 Darker background indicates stronger response.
-It is shown that the three units exhibited strong bias towards curves rather than straight lines.
-They were all tuned for the orientation of the projections.
+It is shown that the three units exhibit strong bias towards curves rather than straight lines.
+They are all tuned for the orientation of the projections.
 This is compliant with the selectivity of V4 neurons described in \cite{pasupathy1999}.
 \figurename~\ref{fig:9} shows the response maps of two units which are selective for non-Cartesian gratings.
-Both of the two units were not sensitive to sinusoidal gratings.
+Both of the two units are not sensitive to sinusoidal gratings.
 \figurename~\ref{fig:10} shows the sample patterns of closed shapes and the response map of two units selectively tuned for two kinds of shapes.
-They were sensitive to the angular position of the shapes \cite{pasupathy2001}.
+They are sensitive to the angular position of the shapes \cite{pasupathy2001}.
 
 \begin{figure}[!t]
 \centering
@@ -451,15 +451,15 @@ They were sensitive to the angular position of the shapes \cite{pasupathy2001}.
 \subsection{Feature matching}
 
 In this section, we demonstrate the performance of the features generated by our model in feature matching tasks.
-We do not use typical criteria for evaluating local descriptors \cite{mikolajczyk2005}
-for the reason that the typical criteria focus on matching the same physical point in different viewing conditions,
+We do not use typical criteria to evaluate local descriptors \cite{mikolajczyk2005}
+because the typical criteria focus on matching the same physical point in different viewing conditions,
 at which humans or other intelligent species are not significantly better than computer systems.
 The human vision excels in image understanding tasks such as recognizing a new instance from some category.
 It requires generalization ability of the features.
 
 We first provide a qualitative evaluation.
 The SIFT features \cite{lowe1999} are used for comparison.
-The VLFeat open-source library \cite{vedaldi2010} were utilized for the SIFT implementation and the feature matching algorithm.
+The VLFeat open-source library \cite{vedaldi2010} are utilized for the SIFT implementation and the feature matching algorithm.
 
 \begin{figure}[!t]
 \centering
@@ -495,18 +495,18 @@ The result suggests that our model exhibits both competitive discrimination abil
 
 Another comparison in \figurename~\ref{fig:12} demonstrates
 more clearly the advantage of our model compared with SIFT feature.
-\figurename~\ref{fig:12a} shows that our model produced correct matches
+\figurename~\ref{fig:12a} shows that our model produces correct matches
 between the model van in the left and the two real vans in the right. 
-However, SIFT feature failed to produce correct matches (\figurename~\ref{fig:12b}). 
-SIFT feature utilizes the direction of image gradient. 
+However, SIFT descriptor fails to produce correct matches (\figurename~\ref{fig:12b}). 
+SIFT descriptor utilizes the direction of image gradient. 
 It fails to capture the shape feature of an object when the object's color changes dramatically because the direction of image gradient changes with the color. 
 Our model focuses on the shape feature and thus achieves a stable matching despite the change in color.
 
 For quantitative evaluation, we use the ``Face-easy'' category from the Caltech 101 dataset \cite{fei2007}.
 This category consists of frontal face photos of many different people.
 They are all cropped to the same size and the same face location.
+A match is correct if it is a pair of corresponding regions in the same position of two images, which contain the same facial feature.
 The images are randomly paired for feature matching.
-A correct match between facial features should be corresponding regions in the two images.
 We use precision-recall curves to compare our neural features with the SIFT features.
 \begin{equation}
 \text{Precision} = \frac{\text{\#correct matches}}{\text{\#correct matches} + \text{\#false matches}}.
@@ -515,7 +515,7 @@ We use precision-recall curves to compare our neural features with the SIFT feat
 \text{Recall} = \frac{\text{\#correct matches}}{\text{\#all features}}.
 \end{equation}
 The result is shown in \figurename~\ref{fig:13}.
-Extensive evaluation on the generalization ability of our features is in the object recognition experiment in the next subsection.
+Extensive evaluation on the generalization ability of our features is demonstrated with object recognition experiment in the next subsection.
 
 \begin{figure}[!t]
 \centerline{\includegraphics[width=0.9\linewidth]{images/fig13.eps}} 
@@ -526,9 +526,10 @@ Extensive evaluation on the generalization ability of our features is in the obj
 \subsection{Object recognition}
 
 We evaluate the performance of the proposed model in object recognition in clutter for which 
-the target object in both the training and test samples appears at variable scales and positions within an unsegmented image.
-Features at the salient-points are extracted and passed to a classifier.
-We experimented with the SVM classifier and evaluated the classifier over the Caltech 101 dataset \cite{fei2007}.
+the target object in both the training and test samples appears at variable scales and positions.
+The Caltech 101 dataset \cite{fei2007} is used in this experiment.
+Given an input image, features at the salient-points are extracted and passed to an SVM classifier.
+We evaluate our model with different configurations of parameters.
 
 In the RBM encoders of V4 units, the visible RBM units collect their input from complex cells with different preferred orientations.
 Therefore, we investigate the selection of sampling density of orientations (i.e., the number of different preferred orientations).
@@ -537,7 +538,7 @@ In this experiment, 30 training samples are randomly chosen from each category.
 For each training image, 50 features are randomly chosen and passed to the classifier.
 The result shows that selection of sampling density does not exhibit obvious impact on the performance.
 With a small density, we can lower the dimension of the input of RBM encoders without a significant loss in object recognition performance.
-Thus in the succeeding experiments, a sampling density of $3$ is used. 
+Thus in the following experiments, a sampling density of $3$ is used. 
 
 \begin{figure}[!t]
 \centering
@@ -555,7 +556,7 @@ We can also control the number of features extracted from an image by adjusting 
 To investigate the contribution of the number of features on performance, we vary the number of features chosen from each training image.
 We choose 20 training samples from each category.
 The result is shown in \figurename~\ref{fig:14b}.
-With 50 features per image the result approaches the best performance.
+With 50 features per image the performance approaches the upper bound.
 In the succeeding experiments, we take 50 features from each image.
 
 The influence of the number of training samples on the performance of our model is also studied.
@@ -608,7 +609,7 @@ algorithms & machine (only V4 layer) & V4 neuron; radial basis function network 
 The model proposed in this paper is a biologically motivated model for shape-based image feature extraction.
 Traditional image descriptors utilize flat models which extract features directly from the image via statistical or algebraic techniques \cite{mikolajczyk2005}. 
 On the contrary, our proposed model simulates the biological vision in the level of neural mechanism.
-Its multilayer structure resembles the neural systems and extracts information from simple features to gradually more complex features. 
+Its multilayer structure resembles the neural systems and gradually extracts information of complex features. 
 
 Previous work on biologically inspired models shows that efficient object recognition algorithms can be developed 
 based on the representation generated by the primary visual cortex \cite{wei2014,wei2014b,zhao2013}.
@@ -626,12 +627,11 @@ The HMAX model consists of fewer layers and only one layer (S2 layer) is trainab
 In the proposed model, we combine these two approaches.
 The layers corresponding to the primary visual cortex is artificially designed with prior knowledge of the cortical neurons.
 V4 features are automatically extracted based on the output of the artificially designed network.
-This strategy saves us from retraining the first layers every time.
 Additionally, we implement a layer of saliency filters to detect key-points in images,
 which enables the model to process images of various sizes efficiently. 
-In \tablename~\ref{tab:2}, we summarize the comparison of the three models.
+In \tablename~\ref{tab:2}, we summarize the comparison of these three models.
 
-Future work should involve further investigation into the visual systems and extensive evaluation on shape-based object detection.
+Future work will involve further investigation into the visual systems and extensive evaluation on shape-based object detection.
 
 \bibliographystyle{unsrt}
 \bibliography{ref}
