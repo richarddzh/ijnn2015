@@ -47,7 +47,7 @@ A high degree of abstraction is required to transform low-level pixel data into 
 In an attempt to bridge this semantic gap, various methods have been proposed to extract features from the pixel representation of images.
 However, humans and primates outperform any existing computer vision system with respect to almost any measure.
 Though the neural mechanism of vision has not been fully revealed,
-recent research on neuroscience do provide many inspiring discoveries which would help development of computer vision algorithms.
+recent research on neuroscience provides many inspiring discoveries which would help development of computer vision algorithms.
 In this paper, we demonstrate a novel model of visual area V4 and its application to shape-based feature extraction and object discrimination.
 Experimental results show that the proposed model exhibits similar shape selectivity to that of real V4 neurons
 and it outperforms many existing methods in computer vision tasks including feature matching and object recognition. 
@@ -87,7 +87,7 @@ The discussion and conclusion is summarized in section~\ref{sec:5}.
 
 In this section, we briefly review some existing models of V4 and the deep learning model.
 
-V4 neurons have been examine with different varieties of visual stimuli, including light bars, sinusoidal gratings~(\figurename~\ref{fig:2a}),
+V4 neurons have been examined with different varieties of visual stimuli, including light bars, sinusoidal gratings~(\figurename~\ref{fig:2a}),
 non-Cartesian gratings~(\figurename~\ref{fig:2b}), and closed shapes~(\figurename~\ref{fig:2c}) \cite{gallant1996,pasupathy2001}.
 They generally prefer complex features to simple features such as bars and sinusoidal gratings \cite{gallant1996}.
 Most V4 neurons are tuned for the curvature and orientation of boundary fragments \cite{pasupathy2001}.
@@ -118,7 +118,7 @@ The deep learning model also draws inspiration from the layered structure of the
 It learns representations of data through stacked layers of Restricted Boltzmann Machines (RBM).
 When it is trained with natural images, 
 the kernels of the data-connected layer resemble the pattern of the receptive field of neurons in the primary visual cortex.
-By training many stacked layers of RBM, highly abstracted features can be extracted automatically from input images.
+By training many stacked layers of RBM, highly abstracted features can be automatically extracted from input images.
 Therefore, with additional fine tuning, the deep model exhibits high performance in image classification \cite{krizhevsky2012}.
 Our proposed model employs a similar multilayer structure but combines automatic feature extraction with artificial features.
 This combined strategy allows our model to work on fewer training images.
