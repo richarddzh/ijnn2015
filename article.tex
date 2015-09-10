@@ -8,7 +8,6 @@
 \usepackage{algpseudocode}
 \usepackage{booktabs}
 \usepackage[sort&compress]{natbib}
-\usepackage{setspace}
 
 \begin{document}
 
@@ -60,7 +59,7 @@ Higher levels (inferior temporal cortex) comprehend concepts of complex objects 
 As an intermediate stage, V4 plays a crucial role in transforming low-level orientation signals into complex object representations.
 
 \begin{figure}[!t]
-\centerline{\includegraphics[width=0.8\linewidth]{images/fig1.jpg}} 
+\centerline{\includegraphics[width=0.8\linewidth]{fig1.jpg}} 
 \caption{V4 is an intermediate stage in visual recognition.}
 \label{fig:1}
 \end{figure}
@@ -95,9 +94,9 @@ Therefore, unlike neurons in V1, V4 neurons can not be modeled with linear filte
 
 \begin{figure}[!t]
 \centering
-\subfloat[]{\includegraphics[width=0.18\linewidth]{images/fig2a.jpg}\label{fig:2a}}\hfil
-\subfloat[]{\includegraphics[width=0.36\linewidth]{images/fig2b.jpg}\label{fig:2b}}\hfil
-\subfloat[]{\includegraphics[width=0.36\linewidth]{images/fig2c.jpg}\label{fig:2c}}
+\subfloat[]{\includegraphics[width=0.18\linewidth]{fig2a.jpg}\label{fig:2a}}\hfil
+\subfloat[]{\includegraphics[width=0.36\linewidth]{fig2b.jpg}\label{fig:2b}}\hfil
+\subfloat[]{\includegraphics[width=0.36\linewidth]{fig2c.jpg}\label{fig:2c}}
 \caption{Shapes to examine V4 selectivity.
 (a) Sinusoidal gratings. (b) Non-Cartesian gratings. (c) Closed shapes.}
 \label{fig:2}
@@ -131,7 +130,7 @@ Different cortical areas along the neural pathway are explicitly mapped to diffe
 \figurename~\ref{fig:3} shows the architecture of our model.
 
 \begin{figure}[!t]
-\centerline{\includegraphics[width=\linewidth]{images/fig3.eps}} 
+\centerline{\includegraphics[width=\linewidth]{fig3.eps}} 
 \caption{Multilayer neural network model of V4.}
 \label{fig:3}
 \end{figure}
@@ -221,7 +220,7 @@ These patches contain salient shape features which should be extracted.
 Conversely, patches with high entropy values should be filtered out.
 
 \begin{figure}[!t]
-\centerline{\includegraphics[width=0.8\linewidth]{images/fig4.jpg}} 
+\centerline{\includegraphics[width=0.8\linewidth]{fig4.jpg}} 
 \caption{Entropy of image patches.
 Bar charts in the second row show the output values of complex cells
 with different preferred orientations (from $0^\circ$ to $180^\circ$).}
@@ -266,14 +265,14 @@ Saliency filters filter out these regions by applying a threshold to the entropy
 
 \begin{figure}[!t]
 \centering
-\subfloat[Car image]{\includegraphics[width=0.32\linewidth]{images/fig5a.jpg}\label{fig:5a}}\hfil
-\subfloat[Activity map]{\includegraphics[width=0.32\linewidth]{images/fig5c.jpg}\label{fig:5b}}\hfil
-\subfloat[Entropy map]{\includegraphics[width=0.32\linewidth]{images/fig5e.jpg}\label{fig:5c}}\\
-\subfloat[Face image]{\includegraphics[width=0.32\linewidth]{images/fig5b.jpg}\label{fig:5d}}\hfil
-\subfloat[Activity map]{\includegraphics[width=0.32\linewidth]{images/fig5d.jpg}\label{fig:5e}}\hfil
-\subfloat[Entropy map]{\includegraphics[width=0.32\linewidth]{images/fig5f.jpg}\label{fig:5f}}\\
-\subfloat[Salient points]{\includegraphics[width=0.49\linewidth]{images/fig5g.jpg}\label{fig:5g}}\hfil
-\subfloat[Salient points]{\includegraphics[width=0.49\linewidth]{images/fig5h.jpg}\label{fig:5h}}
+\subfloat[Car image]{\includegraphics[width=0.32\linewidth]{fig5a.jpg}\label{fig:5a}}\hfil
+\subfloat[Activity map]{\includegraphics[width=0.32\linewidth]{fig5c.jpg}\label{fig:5b}}\hfil
+\subfloat[Entropy map]{\includegraphics[width=0.32\linewidth]{fig5e.jpg}\label{fig:5c}}\\
+\subfloat[Face image]{\includegraphics[width=0.32\linewidth]{fig5b.jpg}\label{fig:5d}}\hfil
+\subfloat[Activity map]{\includegraphics[width=0.32\linewidth]{fig5d.jpg}\label{fig:5e}}\hfil
+\subfloat[Entropy map]{\includegraphics[width=0.32\linewidth]{fig5f.jpg}\label{fig:5f}}\\
+\subfloat[Salient points]{\includegraphics[width=0.49\linewidth]{fig5g.jpg}\label{fig:5g}}\hfil
+\subfloat[Salient points]{\includegraphics[width=0.49\linewidth]{fig5h.jpg}\label{fig:5h}}
 \caption{Detecting salient points. (a)(d) Original images.
 (b)(e) Complex cell activity map. 
 (c)(f) Entropy map.
@@ -296,7 +295,7 @@ In this case, $9\times3$ complex cells are selected to form the input layer (or 
 The output vector of the hidden layer forms a representation of local shape features.
 
 \begin{figure}[!t]
-\centerline{\includegraphics[width=0.99\linewidth]{images/fig6.eps}} 
+\centerline{\includegraphics[width=0.99\linewidth]{fig6.eps}} 
 \caption{RBM encoder for local shape feature.}
 \label{fig:6}
 \end{figure}
@@ -331,8 +330,8 @@ The difference between the two shapes is that one has a sharp corner towards the
 
 \begin{figure}[!t]
 \centering
-\subfloat[Response map]{\includegraphics[width=0.48\linewidth]{images/fig7a.jpg}\label{fig:7a}}\hfil
-\subfloat[Weight matrices]{\includegraphics[width=0.48\linewidth]{images/fig7b.jpg}\label{fig:7b}}
+\subfloat[Response map]{\includegraphics[width=0.48\linewidth]{fig7a.jpg}\label{fig:7a}}\hfil
+\subfloat[Weight matrices]{\includegraphics[width=0.48\linewidth]{fig7b.jpg}\label{fig:7b}}
 \caption{Response map and weight matrices of a perceptron that distinguishes two shapes.
 (a) The perceptron prefers the shape in the left half of the samples.
 It is insensitive to small changes in the position of the shape.
@@ -419,10 +418,10 @@ They are sensitive to the angular position of the shapes \cite{pasupathy2001}.
 
 \begin{figure}[!t]
 \centering
-\subfloat[]{\includegraphics[width=0.24\linewidth]{images/fig8a.jpg}\label{fig:8a}}\hfil
-\subfloat[]{\includegraphics[width=0.24\linewidth]{images/fig8b.jpg}\label{fig:8b}}\hfil
-\subfloat[]{\includegraphics[width=0.24\linewidth]{images/fig8c.jpg}\label{fig:8c}}\hfil
-\subfloat[]{\includegraphics[width=0.24\linewidth]{images/fig8d.jpg}\label{fig:8d}}
+\subfloat[]{\includegraphics[width=0.24\linewidth]{fig8a.jpg}\label{fig:8a}}\hfil
+\subfloat[]{\includegraphics[width=0.24\linewidth]{fig8b.jpg}\label{fig:8b}}\hfil
+\subfloat[]{\includegraphics[width=0.24\linewidth]{fig8c.jpg}\label{fig:8c}}\hfil
+\subfloat[]{\includegraphics[width=0.24\linewidth]{fig8d.jpg}\label{fig:8d}}
 \caption{RBM output units responding to convex curves towards certain directions.
 (a) Sample patterns of segmented curves.
 (b-d) Selectivity indexes and response maps of units tuned for upward, downward, and top-left projections. }
@@ -432,18 +431,18 @@ They are sensitive to the angular position of the shapes \cite{pasupathy2001}.
 \begin{figure}[!t]
 \centering
 \subfloat[Response map of a unit selective for a pair of circular sectors (selectivity index = 3.92).]%
-{\includegraphics[width=0.9\linewidth]{images/fig9a.jpg}\label{fig:9a}}\\
+{\includegraphics[width=0.9\linewidth]{fig9a.jpg}\label{fig:9a}}\\
 \subfloat[Response map of a unit selective for helix shapes (Selectivity index = 6.37).]%
-{\includegraphics[width=0.9\linewidth]{images/fig9b.jpg}\label{fig:9b}}
+{\includegraphics[width=0.9\linewidth]{fig9b.jpg}\label{fig:9b}}
 \caption{Response maps of RBM units tuned for non-Cartesian gratings.}
 \label{fig:9}
 \end{figure}
 
 \begin{figure}[!t]
 \centering
-\subfloat[Patterns]{\includegraphics[width=0.31\linewidth]{images/fig10a.jpg}\label{fig:10a}}\hfil
-\subfloat[Response map]{\includegraphics[width=0.31\linewidth]{images/fig10b.jpg}\label{fig:10b}}\hfil
-\subfloat[Response map]{\includegraphics[width=0.31\linewidth]{images/fig10c.jpg}\label{fig:10c}}
+\subfloat[Patterns]{\includegraphics[width=0.31\linewidth]{fig10a.jpg}\label{fig:10a}}\hfil
+\subfloat[Response map]{\includegraphics[width=0.31\linewidth]{fig10b.jpg}\label{fig:10b}}\hfil
+\subfloat[Response map]{\includegraphics[width=0.31\linewidth]{fig10c.jpg}\label{fig:10c}}
 \caption{RBM units responding to closed shapes.}
 \label{fig:10}
 \end{figure}
@@ -464,10 +463,10 @@ The VLFeat open-source library \cite{vedaldi2010} are utilized for the SIFT impl
 \begin{figure}[!t]
 \centering
   \subfloat[Matching between the same face]{
-    \includegraphics[width=0.8\linewidth]{images/fig11a.jpg}
+    \includegraphics[width=0.8\linewidth]{fig11a.jpg}
     \label{fig:11a}}\\
   \subfloat[Matching between different faces]{
-    \includegraphics[width=0.8\linewidth]{images/fig11b.jpg}
+    \includegraphics[width=0.8\linewidth]{fig11b.jpg}
     \label{fig:11b}}
 \caption{Matching face images.}
 \label{fig:11}
@@ -484,10 +483,10 @@ The result suggests that our model exhibits both competitive discrimination abil
 \begin{figure}[!t]
 \centering
   \subfloat[Our match]{
-    \includegraphics[width=0.8\linewidth]{images/fig12a.jpg}
+    \includegraphics[width=0.8\linewidth]{fig12a.jpg}
     \label{fig:12a}}\\
   \subfloat[SIFT match]{
-    \includegraphics[width=0.8\linewidth]{images/fig12b.jpg}
+    \includegraphics[width=0.8\linewidth]{fig12b.jpg}
     \label{fig:12b}}
 \caption{Comparison of feature matching between van images.}
 \label{fig:12}
@@ -518,7 +517,7 @@ The result is shown in \figurename~\ref{fig:13}.
 Extensive evaluation on the generalization ability of our features is demonstrated with object recognition experiment in the next subsection.
 
 \begin{figure}[!t]
-\centerline{\includegraphics[width=0.9\linewidth]{images/fig13.eps}} 
+\centerline{\includegraphics[width=0.9\linewidth]{fig13.eps}} 
 \caption{Matching facial features in Caltech-101 ``Face-easy'' category.}
 \label{fig:13}
 \end{figure}
@@ -543,10 +542,10 @@ Thus in the following experiments, a sampling density of $3$ is used.
 \begin{figure}[!t]
 \centering
   \subfloat[Sampling density of orientations]{
-    \includegraphics[width=0.9\linewidth]{images/fig14a.eps}
+    \includegraphics[width=0.9\linewidth]{fig14a.eps}
     \label{fig:14a}}\\
   \subfloat[Number of features per image]{
-    \includegraphics[width=0.9\linewidth]{images/fig14b.eps}
+    \includegraphics[width=0.9\linewidth]{fig14b.eps}
     \label{fig:14b}}
 \caption{Performance with different parameters.}
 \label{fig:14}
@@ -568,10 +567,10 @@ The performance is compared with other published results \cite{grauman2005,lazeb
 \begin{figure}[!t]
 \centering
   \subfloat[Comparison with other methods]{
-    \includegraphics[width=0.9\linewidth]{images/fig15a.eps}
+    \includegraphics[width=0.9\linewidth]{fig15a.eps}
     \label{fig:15a}}\\
   \subfloat[Comparison with other features]{
-    \includegraphics[width=0.9\linewidth]{images/fig15b.eps}
+    \includegraphics[width=0.9\linewidth]{fig15b.eps}
     \label{fig:15b}}
 \caption{Comparison of performance.}
 \label{fig:15}
